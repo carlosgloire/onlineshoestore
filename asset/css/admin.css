@@ -1,0 +1,358 @@
+/*----------------------------------/
+#ADMIN CSS PAGE
+/----------------------------------*/
+
+.header-admin {
+    display: flex;
+    color: #fff;
+    padding: 15px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-admin h2 {
+    margin-left: 50px;
+}
+
+.admin-menu {
+    display: none;
+    margin-right: 50px;
+}
+
+.admin-menu i {
+    font-size: 1.5rem;
+}
+
+.admin-section {
+    display: grid;
+    margin-top: 70px;
+    grid-template-columns: 20% auto;
+}
+
+
+/* ------------------------- /
+#
+/ ------------------------- */
+
+.first-bloc nav {
+    width: 20%;
+    position: fixed;
+    display: flex;
+    height: 90vh;
+    padding-top: 30px;
+    gap: 10px;
+    flex-direction: column;
+    background-color: #141b1fda;
+    box-shadow: 0px 1px 10px #ececec;
+}
+
+.first-bloc nav a {
+    display: flex;
+    gap: 10px;
+    color: #fff;
+    padding: 10px 25px;
+    align-items: center;
+    -webkit-column-gap: 10px;
+    transition-delay: 0.2s;
+    transition: 0.5s ease-in-out;
+}
+
+.first-bloc nav a:hover {
+    color: #141b1fda;
+    background-color: #fff;
+}
+
+.first-bloc nav .activ {
+    color: #141b1fda;
+    background-color: #fff;
+}
+
+
+/* ------------------------- /
+#
+/ ------------------------- */
+
+.all-items {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.all-items .bloc-content {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 20px;
+    padding-right: 50px;
+    justify-content: center;
+    gap: 30px;
+    -webkit-column-gap: 30px;
+}
+
+.bloc-content div {
+    width: 250px;
+    height: 180px;
+    padding: 10px 10px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    transition-delay: 0.2s;
+    border-radius: 10px;
+    gap: 10px;
+    -webkit-column-gap: 10px;
+    transition: 0.5s ease-in-out;
+    box-shadow: 0px 1px 10px #ececec;
+}
+
+.bloc-content div i {
+    padding: 12px 15px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 50%;
+    background: #ffffff;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: inset 13px 13px 26px #e3e3e3, inset -13px -13px 26px #ffffff;
+}
+
+.bloc-content div p {
+    font-weight: 500;
+}
+
+.bloc-content div span {
+    color: #9a9a9a;
+    font-weight: 600;
+}
+
+.bloc-content div:hover {
+    color: #fff;
+    background-color: #141b1fda;
+}
+
+.bloc-content div:hover i {
+    color: #141b1fda;
+}
+
+
+/* ------------------------- /
+#Newsletter
+/ ------------------------- */
+
+.newsletter-form {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newsletter-form form {
+    width: 55%;
+    padding: 30px 35px;
+    text-align: center;
+    box-shadow: 0px 1px 10px #d9d9d9b8;
+}
+
+.newsletter-form form h3 {
+    margin-bottom: 20px;
+}
+
+
+/* ------------------------- /
+#Shipment
+/ ------------------------- */
+
+.shipment {
+    margin-left: 50px;
+    margin-right: 50px;
+    padding-bottom: 30px;
+    border-top: 1px dashed #9a9a9a;
+}
+
+.ship {
+    margin-left: 50px;
+    margin-right: 50px;
+    padding-bottom: 30px;
+    border-top: 1px solid #9a9a9a;
+}
+
+.date {
+    display: flex;
+    color: #9a9a9a;
+    font-weight: 500;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.shipment-details {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    justify-content: center;
+    -webkit-column-gap: 10px;
+}
+
+.shipment-details div {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    text-align: center;
+    display: grid;
+    gap: 4px;
+    -webkit-column-gap: 4px;
+    background-color: #fff;
+    box-shadow: 0px 1px 10px #d9d9d9b8;
+}
+
+
+/* ------------------------- /
+#Slides
+/ ------------------------- */
+
+.slide-details {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 30px;
+}
+
+.add-slide,
+.add-shoes {
+    display: flex;
+    font-size: 0.8rem;
+    padding: 15px 20px;
+    border-radius: 25px;
+    width: fit-content;
+    transition-delay: 0.4s;
+    transition: 0.8s ease-in-out;
+    justify-content: center;
+    background-color: #141b1fda;
+}
+
+.add-slide a,
+.add-shoes a {
+    font-weight: 500;
+    color: #ffff;
+}
+
+.add-slide:hover,
+.add-shoes:hover {
+    background-color: #fff;
+    box-shadow: 0px 1px 10px #d9d9d9b8;
+}
+
+.add-slide:hover a,
+.add-shoes:hover a {
+    color: #141b1fda;
+}
+
+.slide-items {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    justify-content: center;
+    -webkit-column-gap: 10px;
+}
+
+.slide-items img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.slide-items div {
+    position: relative;
+}
+
+.slide-items div i {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: #ad4949;
+    padding: 12px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+
+/* ------------------------- /
+#Categories
+/ ------------------------- */
+
+.categorie-details {
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    display: grid;
+    gap: 15px;
+    -webkit-column-gap: 15px;
+    grid-template-columns: auto auto;
+}
+
+.categorie-item {
+    padding: 10px 15px;
+    box-shadow: 0px 1px 10px #d9d9d9b8;
+}
+
+.categorie-details p {
+    margin-top: 20px;
+}
+
+.categorie-item div {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+    -webkit-column-gap: 10px;
+}
+
+.categorie-item div i {
+    border-radius: 50%;
+    padding: 10px 12px;
+    color: #141b1fda;
+    box-shadow: 0px 1px 10px #d9d9d9b8;
+}
+
+.categorie-item div .bi-trash3 {
+    color: #ad4949;
+}
+
+/*************POPUP************/
+.popup{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 3s ease;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.678);
+}
+
+.popup-container{
+    width: fit-content;
+    padding: 40px 50px;
+    background-color: white;
+}
+.hidden-popup{
+    display: none;
+}
+
+.icons-link {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    color: #fff;
+    background-color: #141b1fda;
+    font-family: "Poppins", sans-serif;
+    width: 48%;
+    border-radius: 4px;
+ 
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laisser un avis</title>
+    <link rel="stylesheet" href="../css/review.css">
+    <link rel="shortcut Icon" href="../images/logo.png">
+</head>
+<body>
+    <div class="container">
+        <h2>Laissez un avis pour une collection</h2>
+        <form id="reviewForm" method="POST" action="submit_review_product.php">
+            <input type="hidden" name="product_id" id="product_id" value="">
+            <input type="hidden" name="rating" id="rating" value="">
+        </form>
+        <p>Pour laisser un avis veillez Cliquez sur une ligne d'etoiles <br> selon l'appréciation du collection </p>
+        <div id="star-rating">
+            <div data-value="5" class="star-row"title="Click here to review a shoe">
+                <div class="bloc">
+                    <span>5.0</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                </div>
+            </div>
+            <div data-value="4" class="star-row" title="Click here to review a shoe">
+                <div class="bloc">
+                    <span>4.0</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9734;</span>
+                </div>
+            </div>
+            <div data-value="3" class="star-row" title="Click here to review a shoe">
+                <div class="bloc">
+                    <span>3.0</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                </div>
+            </div>
+            <div data-value="2" class="star-row" title="Click here to review a shoe">
+                <div class="bloc">
+                    <span>2.0</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                </div>
+            </div>
+            <div data-value="1" class="star-row" title="Click here to review a shoe">
+                <div class="bloc">
+                    <span>1.0</span>
+                    <span class="star">&#9733;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                    <span class="star">&#9734;</span>
+                </div>
+            </div>
+        </div>
+        <button id="submit-btn">Soumettre</button>
+    </div>
+    <script src="../javascript/review_product.js"></script>
+</body>
+</html>
