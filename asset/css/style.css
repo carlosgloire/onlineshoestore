@@ -671,3 +671,65 @@ footer {
     font-size: 0.8rem;
     background-color: #141b1fda;
 }
+
+
+/*---------------------------------------/
+#Drop down profile
+/---------------------------------------*/
+.indicator .bi-person-circle {
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.dashboard-user {
+    position: absolute;
+    top: 50px;
+    right: 380px;
+    display: flex;
+    display: none;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.dashboard-user a {
+    color: #141b1fda;
+    padding: 15px 50px;
+    border: 1px solid #eaeaea;
+    transition-delay: 0.4s;
+    transition: 0.8s ease-in-out;
+}
+
+.dashboard-user a:hover {
+    background-color: #eaeaea;
+}
+
+.indicator:hover .dashboard-user {
+    display: flex;
+}
+.dashboard-user a i {
+   color: #141b1fda;
+}
+.dashboard-user a span {
+    color: #141b1fda;
+ }
+
+/*---------------------------------------/
+#payment
+/---------------------------------------*/
+ .payment-section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle closest-side at center, rgb(178, 183, 188) 10%, rgba(245, 245, 245, 0.8) 70%);
+    background-size: 200% 200%;
+    animation: gradientAnimation 10s ease-in-out infinite;
+}
+ .payment-container{
+    width: 40%;
+    margin: auto;
+    background-color: white;
+    padding: 40px;
+ }

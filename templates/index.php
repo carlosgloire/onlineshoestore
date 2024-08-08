@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once('../controllers/functions.php');
 require_once('../controllers/database/db.php');
 // Calculate the total quantity of all orders
 $total_quantity = 0;
@@ -7,6 +8,12 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
     foreach ($_SESSION['panier'] as $item) {
         $total_quantity += (isset($item['quantity']) ? $item['quantity'] : 0);
     }
+}
+$user = null;
+if (isset($_SESSION['user_id'])) {
+    $query = $db->prepare("SELECT * FROM users WHERE user_id = :user_id");
+    $query->execute(['user_id' => $_SESSION['user_id']]);
+    $user = $query->fetch();
 }
 ?>
 <!DOCTYPE html>
@@ -37,6 +44,44 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
                 <p><img src="../asset/images/logo.png" alt=""></p>
             </div>
             <div class="list">
+                <?php
+                    if (isset($_SESSION['user']) && $_SESSION['user']){
+                        ?>
+                            <div class="indicator">
+                                <p><img style="width: 30px;height: 30px;object-fit:cover;border-radius:50%;cursor:pointer" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
+                                <div class="dashboard-user">
+                                    <a href="dashboard.html">
+                                        <i class="bi bi-person-bounding-box"></i>
+                                        <span><?=$user['firstname']." ".$user['lastname']?></span>
+                                    </a>
+                                    <?php
+                                        $admin=$user['role'];
+                                        if($admin=='admin'){
+                                            ?>
+                                                 <a href="../admin/admin.php">
+                                                    <i class="bi bi-clipboard-pulse"></i>
+                                                    <span>Administration</span>
+                                                </a>
+                                            <?php
+                                        }
+                                    ?>
+                                   
+                                    <a href="profil.php?user_id=<?=$user['user_id']?>">
+                                        <i class="bi bi-person-check"></i>
+                                        <span>My profile</span>
+                                    </a>
+                                    <a href="#" style="display: flex;align-items:center;gap:5px">
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                        <form action="" method="post" style="margin-top: -3px;">
+                                            <button name="logout"><span>Log out</span></button>
+                                        </form>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php
+                    }
+                ?>
+
                 <div class="list-details">
                     <a class="home" href="#">Home</a>
                     <a href="#">About us</a>
@@ -255,7 +300,7 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
             <div class="all-categories">
                 <div class="shoes-item men-shoes">
                     <?php
-                        $query = $db->prepare("SELECT photo,name FROM shoes WHERE type = 'Men'");
+                        $query = $db->prepare("SELECT photo,name,shoe_id FROM shoes WHERE type = 'Men'");
                         $query->execute();
                         $men = $query->fetchAll(PDO::FETCH_ASSOC);
                         if(! $men){
@@ -264,12 +309,14 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
                         else{
                             foreach($men as $man){
                                 ?>
-                                <div class="shoes">
-                                    <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
-                                    <div class="overlay">
-                                        <span><?=$man['name']?></span><br>
+                                <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>">
+                                    <div class="shoes">
+                                        <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
+                                        <div class="overlay">
+                                            <span><?=$man['name']?></span><br>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             <?php
                             }
                         }
@@ -279,7 +326,7 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
 
                 <div class="shoes-item wemen">
                 <?php
-                        $query = $db->prepare("SELECT photo,name FROM shoes WHERE type = 'Women'");
+                        $query = $db->prepare("SELECT photo,name,shoe_id FROM shoes WHERE type = 'Women'");
                         $query->execute();
                         $men = $query->fetchAll(PDO::FETCH_ASSOC);
                         if(! $men){
@@ -288,12 +335,14 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
                         else{
                             foreach($men as $man){
                                 ?>
-                                <div class="shoes">
-                                    <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
-                                    <div class="overlay">
-                                        <span><?=$man['name']?></span>
+                                <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>">
+                                    <div class="shoes">
+                                        <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
+                                        <div class="overlay">
+                                            <span><?=$man['name']?></span><br>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             <?php
                             }
                         }
@@ -302,7 +351,7 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
 
                 <div class="shoes-item children">
                 <?php
-                        $query = $db->prepare("SELECT photo,name FROM shoes WHERE type = 'Children'");
+                        $query = $db->prepare("SELECT photo,name,shoe_id FROM shoes WHERE type = 'Children'");
                         $query->execute();
                         $men = $query->fetchAll(PDO::FETCH_ASSOC);
                         if(! $men){
@@ -311,12 +360,14 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
                         else{
                             foreach($men as $man){
                                 ?>
-                                <div class="shoes">
-                                    <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
-                                    <div class="overlay">
-                                        <span><?=$man['name']?></span>
+                                <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>">
+                                    <div class="shoes">
+                                        <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
+                                        <div class="overlay">
+                                            <span><?=$man['name']?></span><br>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             <?php
                             }
                         }

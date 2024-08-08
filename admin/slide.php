@@ -105,7 +105,7 @@
         </div>
     </section>
     <?=popup_slides()?>
-    <script src="../asset/javascript/delete_popup.js"></script>
+    <script src="../asset/javascript/popup_delete_slide.js"></script>
 </body>
 
 </html>

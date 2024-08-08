@@ -85,24 +85,28 @@
                     <div class="all-inputs">
                         <input type="text" id="brand" name="brand" placeholder="Brand"  value="<?= isset($brand)? $brand:''?>">
                     </div>
-                    <select name="type" id="">
-                        <option value="type">Select types</option>
-                        <option value="Men">Men</option>
-                        <option value="Wemen">Wemen</option>
-                        <option value="Children">Children</option>
-                    </select>
-                    <select name="category" id="">
-                        <option value="category">Select shoes categories</option>
-                        <?php 
-                            $query = $db->prepare('SELECT * FROM categories');
-                            $query->execute();
-                            while($categorie = $query->fetch()){
-                                ?>
-                                    <option value="<?=$categorie['category_id']?>"><?=$categorie['category_name']?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
+                    <div  class="all-inputs">
+                        <select name="type" id="">
+                            <option value="type">Select types</option>
+                            <option value="Men">Men</option>
+                            <option value="Wemen">Wemen</option>
+                            <option value="Children">Children</option>
+                        </select>
+                    </div>
+                    <div class="all-inputs">
+                        <select name="category" id="">
+                            <option value="category">Select shoes categories</option>
+                            <?php 
+                                $query = $db->prepare('SELECT * FROM categories');
+                                $query->execute();
+                                while($categorie = $query->fetch()){
+                                    ?>
+                                        <option value="<?=$categorie['category_id']?>"><?=$categorie['category_name']?></option>
+                                    <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
                     <div class="all-inputs">
                         <input type="text" id="size" name="size"  value="<?= isset($size)? $size:''?>">
                     </div>
@@ -120,7 +124,7 @@
                     </div>
 
                     <div class="submit">
-                        <input type="submit" name="edit" value="Add shoes">
+                        <input type="submit" name="edit" value="Update">
                     </div>
                 </form>
             </div>

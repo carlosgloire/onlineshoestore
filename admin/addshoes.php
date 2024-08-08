@@ -80,29 +80,33 @@
                     <p style="color:green;font-size:13px;text-align:center"><?=$success?></p>
                     <h3>Add a shoe</h3>
                     <div class="all-inputs">
-                    <input type="text" id="name" name="name" placeholder="Shoe name" value="<?= isset($name)? $name:''?>">
+                        <input type="text" id="name" name="name" placeholder="Shoe name" value="<?= isset($name)? $name:''?>">
                     </div>
                     <div class="all-inputs">
-                    <input type="text" id="brand" name="brand" placeholder="Brand"  value="<?= isset($brand)? $brand:''?>">
+                        <input type="text" id="brand" name="brand" placeholder="Brand"  value="<?= isset($brand)? $brand:''?>">
                     </div>
-                    <select name="type" id="">
-                        <option value="type">Select types</option>
-                        <option value="Men">Men</option>
-                        <option value="Wemen">Wemen</option>
-                        <option value="Children">Children</option>
-                    </select>
-                    <select name="category" id="">
-                        <option value="category">Select shoes categories</option>
-                        <?php 
-                            $query = $db->prepare('SELECT * FROM categories');
-                            $query->execute();
-                            while($categorie = $query->fetch()){
-                                ?>
-                                    <option value="<?=$categorie['category_id']?>"><?=$categorie['category_name']?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
+                    <div class="all-inputs">
+                        <select name="type" id="">
+                            <option value="type">Select types</option>
+                            <option value="Men">Men</option>
+                            <option value="Wemen">Wemen</option>
+                            <option value="Children">Children</option>
+                        </select>
+                    </div>
+                    <div class="all-inputs">
+                        <select name="category" id="">
+                            <option value="category">Select shoes categories</option>
+                            <?php 
+                                $query = $db->prepare('SELECT * FROM categories');
+                                $query->execute();
+                                while($categorie = $query->fetch()){
+                                    ?>
+                                        <option value="<?=$categorie['category_id']?>"><?=$categorie['category_name']?></option>
+                                    <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
                     <div>
                         <p style="text-align: left;margin-left:22px;margin-top:10px">Select size</p>
                         <div class="all-inputs">

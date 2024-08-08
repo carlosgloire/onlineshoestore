@@ -1,0 +1,238 @@
+<?php
+session_start();
+require_once('../controllers/functions.php');
+require_once('../controllers/database/db.php');
+$success = null;
+$error = null;
+notconnected();
+
+if (isset($_GET['user_id']) && !empty($_GET['user_id'])) {
+    $user_id = $_GET['user_id'];
+    $_SESSION['user_id'] = $user_id; // Ensure session user_id is set
+    $query = $db->prepare('SELECT * FROM users WHERE user_id = ?');
+    $query->execute([$user_id]);
+    $user = $query->fetch();
+
+    if ($user) {
+        $photo = $user['photo'];
+        $fname = $user['firstname'];
+        $lname = $user['lastname'];
+        $email = $user['email'];
+        $phone = $user['phone'];
+        $country_fetched = $user['country'];
+        $city = $user['city'];
+    } else {
+        echo '<script>alert("User ID not found.");</script>';
+        echo '<script>window.location.href="templates/";</script>';
+        exit;
+    }
+} else {
+    echo '<script>alert("No user ID provided.");</script>';
+    echo '<script>window.location.href="templates/";</script>';
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <!--css-->
+    <link rel="stylesheet" href="../asset/css/style.css">
+    <link rel="stylesheet" href="../asset/css/product.css">
+    <!--Font family-->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <!--Icons-->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.0/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+</head>
+<body>
+    <section class="user-dashboard">
+        <div class="dashboard">
+            <div class="left-side">
+                <nav>
+                    <a href="dashboard.php">
+                        <i class="bi bi-clipboard-pulse"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="act" href="#">
+                        <i class="bi bi-person-check"></i>
+                        <span>My profile</span>
+                    </a>
+                    <a href="#">
+                        <i class="bi bi-credit-card-2-front"></i>
+                        <span>Payment</span>
+                    </a>
+                    <a href="#" style="display: flex;align-items:center;gap:5px">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <form action="" method="post" style="margin-top: -3px;">
+                            <button name="logout"><span style="color:white">Log out</span></button>
+                        </form>
+                    </a>
+                </nav>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="profil-details">
+                <div class="categories-list">
+                    <ul>
+                        <li class="active" data-filter="men-shoes">My profile</li>
+                        <li data-filter="wemen">Change profile</li>
+                    </ul>
+                </div>
+                <div class="myprofil shoes-item men-shoes">
+                    <div class="myprofil-details">
+                        <div class="profil-intro">
+                            <h3>My profile</h3>
+                            <p><img src="profile_photo/<?=$photo?>" alt=""></p>
+                        </div>
+                        <div class="all-info">
+                            <div>
+                                <i class="bi bi-person-circle"></i>
+                                <p>First name:</p>
+                                <span><?=$fname?></span>
+                            </div>
+                            <div>
+                                <i class="bi bi-person-circle"></i>
+                                <p>Last name:</p>
+                                <span><?=$lname?></span>
+                            </div>
+                            <div>
+                                <i class="bi bi-envelope"></i>
+                                <p>Email:</p>
+                                <span><?=$email?></span>
+                            </div>
+                            <div>
+                                <i class="bi bi-telephone"></i>
+                                <p>Phone number:</p>
+                                <span><?=$phone?></span>
+                            </div>
+                            <div>
+                                <i class="bi bi-flag"></i>
+                                <p>Country:</p>
+                                <span><?=$country_fetched?></span>
+                            </div>
+                            <div>
+                                <i class="bi bi-app-indicator"></i>
+                                <p>City:</p>
+                                <span><?=$city?></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shoes-item wemen">
+                    <div class="myprofil-details profil-item">
+                        <h3 style="margin-top: 20px; text-align:center;">Update my profile</h3>
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            <div>
+                                <input type="text" name="fname" value="<?= htmlspecialchars($fname) ?>">
+                                <input type="text" name="lname" value="<?= htmlspecialchars($lname) ?>">
+                                <input type="text" name="email" value="<?= htmlspecialchars($email) ?>">
+                                <input type="text" name="phone" value="<?= htmlspecialchars($phone) ?>">
+                                <select id="country" name="country" style="width: 100%; border:none; outline:none;font-family: 'Poppins', sans-serif;padding:10px">
+                                    <option value="select">Select a country...</option>
+                                    <option value="Rwanda">Rwanda  "<?= $country_fetched == 'Rwanda' ? 'selected' : '' ?>"</option>
+                                    <option value="Uganda">Uganda  <?= $country_fetched == 'Uganda' ? 'selected' : '' ?></option>
+                                    <option value="Burundi">Burundi  <?= $country_fetched == 'Burundi' ? 'selected' : '' ?></option>
+                                    <option value="Tanzania" >Tanzania <?= $country_fetched == 'Tanzania' ? 'selected' : '' ?></option>
+                                    <option value="Kenya" >Kenya <?= $country_fetched == 'Kenya' ? 'selected' : '' ?></option>
+                                    <option value="Democratic-republic-of-congo" >Democratic Republic of Congo <?= $country_fetched == 'Democratic-republic-of-congo' ? 'selected' : '' ?></option>
+                                </select>
+                                <input type="text" name="city" value="<?= htmlspecialchars($city) ?>">
+                                <input type="file" name="uploadfile">
+                            </div>
+                            <div class="sub">
+                                <input type="submit" name="edit" value="Update profile">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="../asset/javascript/app.js"></script>
+</body>
+</html>
+
+<?php
+require_once('database/db.php');
+if (isset($_GET['user_id']) && !empty($_GET['user_id'])) {
+    $user_id = $_GET['user_id'];
+    $_SESSION['user_id'] = $user_id; // Ensure session user_id is set
+    $query = $db->prepare('SELECT * FROM users WHERE user_id = ?');
+    $query->execute([$user_id]);
+    $user = $query->fetch();
+
+    if ($user) {
+        $photo = $user['photo'];
+        $fname = $user['firstname'];
+        $lname = $user['lastname'];
+        $email = $user['email'];
+        $phone = $user['phone'];
+        $country_fetched = $user['country'];
+        $city = $user['city'];
+    } else {
+        echo '<script>alert("User ID not found.");</script>';
+        echo '<script>window.location.href="templates/";</script>';
+        exit;
+    }
+} else {
+    echo '<script>alert("No user ID provided.");</script>';
+    echo '<script>window.location.href="templates/";</script>';
+    exit;
+}
+
+if (isset($_POST['edit'])) {
+ 
+    $firstname = htmlspecialchars($_POST['fname']);
+    $lastname = htmlspecialchars($_POST['lname']);
+    $email = htmlspecialchars($_POST['email']);
+    $phone = htmlspecialchars($_POST['phone']);
+    $country = htmlspecialchars($_POST['country']);
+    $city = htmlspecialchars($_POST['city']);
+    $filename = $_FILES["uploadfile"]["name"];
+    $filesize = $_FILES["uploadfile"]["size"];
+    $tempname = $_FILES["uploadfile"]["tmp_name"];
+    $folder = "../templates/profile_photo/" . $filename;
+    $allowedExtensions = ['png', 'jpg', 'jpeg'];
+    $pattern = '/\.(' . implode('|', $allowedExtensions) . ')$/i';
+
+    $existing_user_query = $db->prepare("SELECT * FROM users WHERE email = :email AND user_id != :user_id");
+    $existing_user_query->execute(array('email' => $email, 'user_id' => $_SESSION['user_id']));
+    $existing_user = $existing_user_query->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($firstname) || empty($lastname) || empty($email) || empty($phone) || empty($country)) {
+        echo '<script>alert("Please complete all fields.");</script>';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo '<script>alert("Your email is incorrect.");</script>';
+    } elseif (!preg_match("#^[+]+[0-9]{12}$#", $_POST['phone'])) {
+        echo '<script>alert("Please write the phone number with the country code Ex:+1 000 000 000.");</script>';
+    } elseif ($country == 'select') {
+        $country = $country_fetched;
+    } elseif (!preg_match($pattern, $_FILES['uploadfile']['name']) && !empty($_FILES['uploadfile']['name'])) {
+        echo '<script>alert("Your file must be in \"jpg, jpeg or png\" format");</script>';
+    } elseif ($filesize > 3000000) {
+        echo '<script>alert("Your file must not exceed 3Mb");</script>';
+    } elseif (!empty($filename) && !move_uploaded_file($tempname, $folder)) {
+        echo '<script>alert("Error while uploading");</script>';
+    } elseif ($existing_user) {
+        echo '<script>alert("There is another account created with the email address you entered in this system. Please change the email or delete the account.");</script>';
+    } else {
+        if (empty($filename)) {
+            $filename = $photo;
+        }
+
+        $query = $db->prepare("UPDATE users SET firstname = ?, lastname = ?, email = ?, phone = ?, country = ?, city = ?, photo = ? WHERE user_id = ?");
+        $update = $query->execute(array($firstname, $lastname, $email, $phone, $country, $city, $filename, $_SESSION['user_id']));
+
+        if ($update) {
+            echo '<script>alert("Profile updated successfully.");</script>';
+        } else {
+            echo '<script>alert("Error updating profile.");</script>';
+        }
+    }
+}
+?>

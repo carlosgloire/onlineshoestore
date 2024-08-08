@@ -66,7 +66,7 @@ $shoes = $query->fetchAll();
 
     <!--Product home page-->
     <section class="pro-home">
-        <h3>#Shoe</h3>
+        <h3>#Shoes</h3>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Suscipit debitis quis alias vero tempore?</p>
     </section>
     <div class="all-inputs" style="width:16%;margin-left:auto;margin-right:40px">

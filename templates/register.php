@@ -46,40 +46,40 @@
                         <input  name="lname" type="text" placeholder="Enter second name" value="<?=isset($_POST['lname'])?$_POST['lname']:''?>">
                 </div>
                 <div class="all-inputs">
-                    <i class="fa-solid fa-phone"></i>
+                    <i class="bi bi-telephone-x"></i>
                     <input type="text" id="phone" name="phone" placeholder="Enter phone number" value="<?=isset($_POST['phone'])?$_POST['phone']:''?>">
                 </div>
-                <div class="all-inputs"> 
+                <div class="all-inputs" > 
                     <i class="fa-solid fa-earth-americas"></i>
-                    <select id="country" name="country" style="width: 100%; border:none; background: #f4f3f3f7;outline:none;font-family: 'Poppins', sans-serif;">
+                    <select id="country" name="country" style="width: 100%; border:none; outline:none;font-family: 'Poppins', sans-serif;">
                         <option value="select">Select a country...</option>
-                        <option value="rwanda">
+                        <option value="Rwanda">
                             Rwanda
                         </option>
-                        <option value="uganda">
+                        <option value="Uganda">
                             Uganda
                         </option>
-                        <option value="burundi">
+                        <option value="Burundi">
                             Burundi
                         </option>
-                        <option value="tanzania">
+                        <option value="Tanzania">
                             Tanzania
                         </option>
-                        <option value="kenya">
+                        <option value="Kenya">
                             Kenya
                         </option>
-                        <option value="democratic-republic-of-congo">
+                        <option value="Democratic-republic-of-congo">
                             Democratic Republic of Congo
                         </option>
                     </select>
                 </div>
                 <div class="all-inputs">
-                    <i class="fa-solid fa-phone"></i>
+                    <i class="bi bi-bank"></i>
                     <input type="text" id="city" name="city" placeholder="Enter city" value="<?=isset($_POST['city'])?$_POST['city']:''?>">
                 </div>
                 <div class="all-inputs">
-                    <i class="fa-solid fa-phone"></i>
-                    <input type="file" id="uploadfile" name="uploadfile" accept=".jpg, .jpeg, .png" value="<?=isset($_POST['uploadfile'])?$_POST['uploadfile']:''?>">
+                    <i class="bi bi-file-earmark-image"></i>
+                    <input type="file" id="uploadfile" name="uploadfile" accept=".jpg, .jpeg, .png" value="<?=isset($_POST['uploadfile'])?$_POST['uploadfile']:''?>" >
                 </div>
                 <div class="all-inputs">
                     <i class="bi bi-key"></i>

@@ -15,14 +15,15 @@ if(isset($_POST['login'])){
       $error ="Please enter the password!";
    }
    else{
-      $request = $db->prepare("SELECT email,password FROM users WHERE email = :email ");
+      $request = $db->prepare("SELECT email,password,user_id FROM users WHERE email = :email ");
       $request->bindValue(':email', $mail);
       $request->execute();
-      $admin = $request->fetch(PDO::FETCH_ASSOC);
-      if($admin){
-         if (password_verify($password,$admin['password'])) {
-            $_SESSION['admin']=$admin;
-            header("location: classes/classes.php");
+      $user = $request->fetch(PDO::FETCH_ASSOC);
+      if($user){
+         if (password_verify($password,$user['password'])) {
+            $_SESSION['user_id']=$user['user_id'];
+            $_SESSION['user']=$user;
+            header("location: ../templates/");
             exit;
          }
          else{

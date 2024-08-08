@@ -27,7 +27,7 @@ if (isset($_POST['register'])) {
     $query->bind_param("s", $email);
     $query->execute();
     $mail_query = $query->get_result()->fetch_assoc();
-    if (empty($firstname) || empty($lastname) || empty($email) || empty($phone) || empty($country) || empty($password) || empty($password)) {
+    if (empty($firstname) || empty($lastname) || empty($email) || empty($phone) || empty($country) || empty($password) ) {
         $error = "Please complete all fields";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Your email is incorrect";

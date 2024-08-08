@@ -1,4 +1,8 @@
-<?php require_once('../controllers/login_user.php')?>
+<?php
+    session_start();
+    require_once('../controllers/login_user.php');
+    
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,12 +35,12 @@
             <form action="" method="post">
                 <div class="all-inputs">
                     <i class="bi bi-envelope"></i>
-                    <input type="email" name="mail" placeholder="Enter email" >
+                    <input type="email"  style="width:100%" name="mail" placeholder="Enter email" value="<?=isset($mail)?$mail:""?>">
                 </div>
                 <div class="all-inputs passwo">
                     <div class="pass">
                         <i class="bi bi-key"></i>
-                        <input class="password" name="password" type="password" placeholder="Enter password">
+                        <input style="width:100%" class="password" name="password" type="password" placeholder="Enter password" value="<?=isset($password)?$password:""?>">
                     </div>
                     <div class="eyes">
                         <i class="bi bi-eye  close hidden"></i>

@@ -1,5 +1,8 @@
 <?php
+     session_start();
     require_once('../controllers/database/db.php');
+    require_once('../controllers/functions.php');
+    logout();
     // Fetch categories and their associated products
     $categories_query = $db->query("SELECT c.*,s.*
     FROM categories c
@@ -19,9 +22,6 @@
     }
     }
 
-    session_start();
-    require_once('../controllers/database/db.php');
-
     // Calculate the total quantity of all orders
     $total_quantity = 0;
     if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
@@ -29,6 +29,13 @@
             $total_quantity += (isset($item['quantity']) ? $item['quantity'] : 0);
         }
     }
+
+    $user = null;
+if (isset($_SESSION['user_id'])) {
+    $query = $db->prepare("SELECT * FROM users WHERE user_id = :user_id");
+    $query->execute(['user_id' => $_SESSION['user_id']]);
+    $user = $query->fetch();
+}
 
 ?>
 <!DOCTYPE html>
@@ -64,11 +71,50 @@
                 <p><img src="../asset/images/logo.png" alt=""></p>
             </div>
             <div class="list">
+                <?php
+                    if (isset($_SESSION['user']) && $_SESSION['user']){
+                        ?>
+                            <div class="indicator">
+                                <p><img style="width: 30px;height: 30px;object-fit:cover;border-radius:50%;cursor:pointer" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
+                                <div class="dashboard-user">
+                                    <a href="dashboard.html">
+                                        <i class="bi bi-person-bounding-box"></i>
+                                        <span><?=$user['firstname']." ".$user['lastname']?></span>
+                                    </a>
+                                    <?php
+                                        $admin=$user['role'];
+                                        if($admin=='admin'){
+                                            ?>
+                                                 <a href="../admin/admin.php">
+                                                    <i class="bi bi-clipboard-pulse"></i>
+                                                    <span>Administration</span>
+                                                </a>
+                                            <?php
+                                        }
+                                    ?>
+                                   
+                                    <a href="profil.php?user_id=<?=$user['user_id']?>">
+                                        <i class="bi bi-person-check"></i>
+                                        <span>My profile</span>
+                                    </a>
+                                    <a href="#" style="display: flex;align-items:center;gap:5px">
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                        <form action="" method="post" style="margin-top: -3px;">
+                                            <button name="logout"><span>Log out</span></button>
+                                        </form>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php
+                    }
+                ?>
+
                 <div class="list-details">
-                    <a class="home" href="../templates/">Home</a>
-                    <a href="../templates/">About us</a>
+                    <a class="home" href="index.php">Home</a>
+                    <a href="#">About us</a>
                     <a href="product.php">Shoes</a>
-                    <a href="../templates/">Contacts</a>
+                    <a href="shoes_by_categorie.php">Categories</a>
+                    <a href="#">Contacts</a>
                 </div>
                 <div class="list-panier">
                     <a class="panier" href="cart.php"><i class="bi bi-cart"></i></a>

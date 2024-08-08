@@ -102,8 +102,7 @@ require_once('../controllers/database/db.php') ?>
         </div>
     </section>
     <?=popup_category()?>
-    <script src="../asset/javascript/delete_popup.js"></script>
-    <script src="../asset/javascript/delete_popup.js"></script>
+    <script src="../asset/javascript/popup_delete_category.js"></script>
 </body>
 
 </html>

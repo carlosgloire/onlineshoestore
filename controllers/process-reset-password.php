@@ -59,7 +59,7 @@ if(isset($_POST['reset'])){
         $stmt->execute();
         
           echo '<script>alert("Password updated you can now login");</script>';
-        echo '<script>window.location.href="../pages/login.php";</script>';
+        echo '<script>window.location.href="../templates/login.php";</script>';
         exit;
     }
     
