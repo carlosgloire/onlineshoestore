@@ -62,7 +62,7 @@ require_once('../controllers/database/db.php') ?>
                     <i class="bi bi-file-image"></i>
                     <span>Slides</span>
                 </a>
-                <a href="orders.html">
+                <a href="orders.php">
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>

@@ -1,7 +1,9 @@
 <?php
 session_start();
-require_once('../controllers/functions.php');
 require_once('../controllers/database/db.php');
+require_once('../controllers/functions.php');
+notconnected();
+logout();
 // Calculate the total quantity of all orders
 $total_quantity = 0;
 if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
@@ -48,7 +50,7 @@ if (isset($_SESSION['user_id'])) {
                     if (isset($_SESSION['user']) && $_SESSION['user']){
                         ?>
                             <div class="indicator">
-                                <p><img style="width: 30px;height: 30px;object-fit:cover;border-radius:50%;cursor:pointer" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
+                                <p ><img style="width: 27px;height: 27px;object-fit:cover;border-radius:50%;cursor:pointer;" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
                                 <div class="dashboard-user">
                                     <a href="dashboard.html">
                                         <i class="bi bi-person-bounding-box"></i>
@@ -137,7 +139,7 @@ if (isset($_SESSION['user_id'])) {
                 <p><img src="../asset/images/about.png" alt=""></p>
             </div>
             <div class="about-text">
-                <p>Welcome to our Online Shoe Store, where style, comfort, and quality converge. We offer top footwear from leading brands and emerging designers, featuring a diverse collection for every occasion to match your lifestyle perfectly.</p>
+                <p>Welcome to our Online Shoe Store, offering stylish, comfortable, and high-quality footwear from top brands and emerging designers for every occasion.</p>
                 <p><i class="bi bi-check2-all"></i>Our mission is to make shoe shopping an enjoyable and hassle-free experience. With a user-friendly interface, secure payment options, and dedicated customer service, we strive to exceed your expectations at every step. We believe in offering exceptional value, which is why we continuously update our inventory with the latest trends and timeless classics at competitive prices.</p>
                 <p><i class="bi bi-check2-all"></i>At our core, we value our customers and aim to build lasting relationships based on trust and satisfaction. Thank you for choosing us as your go-to destination for all your footwear needs. Step into style with us today!</p>
             </div>
@@ -191,7 +193,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
             </div>
             <div class="choose-us-item">
-                <i class="fa-solid fa-truck-fast"></i>
+                <i class="bi bi-truck"></i>
                 <div>
                     <h4>Fast Shipping</h4>
                     <p>Receive your orders quickly with our reliable delivery services. Enjoy prompt and efficient shipping right to your door.</p>

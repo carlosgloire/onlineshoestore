@@ -1,7 +1,9 @@
 <?php
 session_start();
 require_once('../controllers/database/db.php');
-
+require_once('../controllers/functions.php');
+notconnected();
+logout();
 // Calculate the total quantity of all orders
 $total_quantity = 0;
 if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
@@ -116,6 +118,7 @@ $shoes = $query->fetchAll();
                             <span>Brand: <?=$shoe['brand']?></span><br>
                             <span>Colors: <?=$shoe['color']?></span><br>
                             <span>Sizes: <?=$shoe['size']?></span><br>
+                            <span>Quantity in stock: <?=$shoe['stock']?> </span><br>
                             <span>Price: <?=$shoe['price']?> RWF</span>
                             <?php
                                 $sql = 'SELECT AVG(rating) as avg_rating FROM reviews WHERE shoe_id = ?';

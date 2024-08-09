@@ -48,7 +48,7 @@ if (isset($_SESSION['user_id'])) {
     <link rel="stylesheet" href="../asset/css/product.css">
     <!--Font family-->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <!--Icons-->
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.0/css/boxicons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -119,7 +119,7 @@ if (isset($_SESSION['user_id'])) {
 
     <section class="pro-home">
         <h3>#Cart</h3>
-        <p>This part shows all the shoes you desire to order, colors , sizes and quantity can be modified just by placing the cursor on them</p>
+        <p>This part shows all the shoes you desire to order, colors , sizes and quantity can be modified just by placing the cursor and edit then click on update cart</p>
     </section>
 
     <section class="our-panier">
@@ -165,7 +165,7 @@ if (isset($_SESSION['user_id'])) {
                                     <div >
                                         <h4>Quantity</h4>
                                         <input type="hidden" name="products[<?=$key?>][shoe_id]" value="<?=$product_id?>">
-                                        <input style="text-align:center; color: #9a9a9a;font-family: 'Poppins', sans-serif;'" type="number" name="products[<?=$key?>][quantity]" value="<?=$quantity?>" min="1">
+                                        <input id="quantity-<?=$key?>" style="text-align:center; color: #9a9a9a;font-family: 'Poppins', sans-serif;" type="number" name="products[<?=$key?>][quantity]" value="<?=$quantity?>" min="1" data-stock="<?=$produit['stock']?>">
                                     </div>
                                     <div>
                                         <h4>Price</h4>
@@ -217,7 +217,17 @@ if (isset($_SESSION['user_id'])) {
             form.submit();
         }
 
-  
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const stock = parseInt(this.getAttribute('data-stock'));
+                const value = parseInt(this.value);
+                if (value > stock) {
+                    alert('The quantity entered is not available in stock.');
+                    this.value = stock;
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+
 <?php
 function popup_shoe(){
     ?>
@@ -13,7 +14,8 @@ function popup_shoe(){
     </div>
 <?php
 }
-
+?>
+<?php
 function popup_category(){
     ?>
         <div class="popup hidden-popup" >
@@ -28,7 +30,8 @@ function popup_category(){
     </div>
 <?php
 }
-
+?>
+<?php
 function popup_slides(){
     ?>
         <div class="popup hidden-popup" >
@@ -46,7 +49,6 @@ function popup_slides(){
 ?>
 
 <?php
-
 function popup_order_item(){
     ?>
         <div class="popup hidden-popup" >
@@ -62,7 +64,36 @@ function popup_order_item(){
 <?php
 }
 ?>
+<?php
 
+function popup_delete_count($error) {
+    ?>
+        <div class="popup <?= isset($error) ? '' : 'hidden-popup' ?>">
+            <div class="popup-container">
+                <form action="" method="post">
+                    <h3>Dear User,</h3>
+                    <p>To delete your account please enter your password</p>
+                    <div class="pass">
+                        <input style="width:100%" class="password" name="password2" type="password" placeholder="Enter password" value="<?= isset($_POST['password2']) ? htmlspecialchars($_POST['password2']) : '' ?>">
+                    </div>
+                    <div style="margin-top: 20px; justify-content:space-between;display:flex" class="popup-btn">
+                        <button type="button" style="cursor:pointer;" class="cancel-popup icons-link" >Cancel</button>
+                        <button name="delete" style="cursor:pointer;" class="delete-popup icons-link">Delete</button>
+                    </div>
+                    <?php
+                    if (isset($error) && !empty($error)) {
+                        ?><p style="color:red;text-align:center;margin-top:10px"><?=$error?></p><?php
+                    }
+                    ?>
+                </form>
+            </div>
+        </div>
+    
+    <?php
+}
+
+
+?>
 <?php
 function notconnected(){
     if (! isset($_SESSION['user'])) {
@@ -79,4 +110,3 @@ function logout(){
     }
 }
 
-logout();

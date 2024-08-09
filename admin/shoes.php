@@ -63,7 +63,7 @@ require_once('../controllers/database/db.php');
                     <i class="bi bi-file-image"></i>
                     <span>Slides</span>
                 </a>
-                <a href="orders.html">
+                <a href="orders.php">
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>
@@ -109,6 +109,7 @@ require_once('../controllers/database/db.php');
                                     <div class="item-details">
                                         <p><?=$shoe['name']?></p>
                                         <span><?=$shoe['price']?> RWF</span>
+                                        <span><?=$shoe['stock']?> in stock</span>
                                     </div>
                                 </div>
                                 <div class="categorie-item" style="box-shadow:none">
