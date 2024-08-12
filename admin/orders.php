@@ -2,8 +2,7 @@
 session_start();
 require_once('../controllers/functions.php');
 require_once('../controllers/database/db.php');
-
-notconnected();
+notAdmin();
 
 // Fetch all orders, order items, and user details from the database
 $query = $db->prepare("
@@ -22,11 +21,16 @@ $query = $db->prepare("
         oi.color, 
         oi.order_item_id,  
         oi.quantity,  
-        oi.total_price
+        oi.total_price,
+        sh.shipment_country as shipping_country,
+        sh.address as shipping_address,
+        sh.whatsapp_number,
+        sh.amount
     FROM orders o
     JOIN users u ON o.user_id = u.user_id
     JOIN order_item oi ON o.order_id = oi.order_id
     JOIN shoes s ON oi.shoe_id = s.shoe_id
+    LEFT JOIN shipment sh ON o.order_id = sh.order_id
     ORDER BY o.order_date DESC
 ");
 $query->execute();
@@ -121,6 +125,11 @@ foreach ($orders as $order) {
                             <?php foreach ($orders_by_date as $order_id => $items): 
                                 $total_order_price = 0;
                                 $pending_order_found = false;
+                                $shipment_country = $items[0]['shipping_country'] ?? '';
+                                $shipping_address = $items[0]['shipping_address'] ?? '';
+                                $whatsapp_number = $items[0]['whatsapp_number'] ?? '';
+                                $amt = $items[0]['amount'] ?? '';
+                                
                                 foreach ($items as $item):
                                     $total_order_price += $item['total_price'];
                                     if ($item['order_status'] == 'pending') {
@@ -154,27 +163,32 @@ foreach ($orders as $order) {
                                         <span><?php echo htmlspecialchars($item['total_price']); ?> RWF</span>
                                     </div>
                                 </div>
+                                <?php endforeach; ?>
+                                <p style="text-align: right;margin-right: 30px;margin-top:20px;font-weight:600">Total order price: <?= htmlspecialchars($total_order_price) ?> RWF</p>
+                                <?php if ($shipment_country || $shipping_address || $whatsapp_number): ?>
+                                    <p style="text-align: right;margin-right: 30px;margin-top:0px;font-weight:600">Shipped at: <?= htmlspecialchars($shipment_country) ?>, <?= htmlspecialchars($shipping_address) ?></p>
+                                    <p style="text-align: right;margin-right: 30px;">WhatsApp: <?= htmlspecialchars($whatsapp_number) ?></p>
+                                    <p style="text-align: right;margin-right: 30px;">Total order amount shipment included: <?= htmlspecialchars($amt)?> RWF</p>
+                                <?php endif; ?>
+                                <p style="text-align: right;margin-right: 30px;">
+                                    <?php 
+                                        switch ($items[0]['order_status']) {
+                                            case 'pending':
+                                                echo "Payment status: Pending </span>";
+                                                break;
+                                            case 'completed':
+                                                echo "Payment status: Completed <span style='color:green'>✔</span>";
+                                                break;
+                                            case 'cancelled':
+                                                echo "Payment status: Cancelled ";
+                                                break;
+                                        }
+                                    ?>
+                                </p>
                             <?php endforeach; ?>
-                            <p style="text-align: right;margin-right: 30px;margin-top:20px;font-weight:600">Total order price: <?= htmlspecialchars($total_order_price) ?> RWF</p>
-                    
-                            <p style="text-align: right;margin-right: 30px;">
-                                <?php 
-                                    switch ($items[0]['order_status']) {
-                                        case 'pending':
-                                            echo "Payment status: Pending </span>";
-                                            break;
-                                        case 'completed':
-                                            echo "Payment status: Completed <span style='color:green'>✔</span>";
-                                            break;
-                                        case 'cancelled':
-                                            echo "Payment status: Cancelled ";
-                                            break;
-                                    }
-                                ?>
-                            </p>
-                          
-                        <?php endforeach; ?>
-                        </div>
+
+
+                 </div>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             <?php endforeach; ?>

@@ -1,6 +1,9 @@
 <?php
+session_start();
 require_once('../controllers/database/db.php');
 require_once('../controllers/functions.php');
+require_once('../controllers/functions.php');
+notAdmin();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = $db->prepare('SELECT * FROM shoes WHERE name LIKE :search');
 $query->execute(['search' => '%' . $search . '%']);

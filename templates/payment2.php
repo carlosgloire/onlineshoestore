@@ -4,46 +4,36 @@ require_once('../controllers/database/db.php');
 
 if (isset($_GET['order_id']) && !empty($_GET['order_id'])) {
     $order_id = $_GET['order_id'];
-    $user_id = $_SESSION['user_id'];
 } else {
     echo '<script>alert("No order ID provided.");</script>';
     echo '<script>window.location.href="templates/";</script>';
     exit;
 }
 
+// Retrieve order details
 $order_query = $db->prepare('SELECT * FROM orders WHERE order_id = ?');
 $order_query->execute([$order_id]);
 $order = $order_query->fetch();
 
 if (!$order) {
-    header('Location: cart.php');
-    exit();
+    echo '<script>alert("Order not found.");</script>';
+    echo '<script>window.location.href="templates/";</script>';
+    exit;
 }
 
-$totalorder = $order['total_amount'];
+$totalorder = $order['total_amount'] / 1351.5;
+
+// Retrieve the total quantity of the order
 $quantity_query = $db->prepare('SELECT SUM(quantity) AS total_quantity FROM order_item WHERE order_id = ?');
 $quantity_query->execute([$order_id]);
 $order_quantity = $quantity_query->fetchColumn();
-
-// Fetch user details
-$user_query = $db->prepare('SELECT email, phone, firstname FROM users WHERE user_id = ?');
-$user_query->execute([$user_id]);
-$user = $user_query->fetch();
-
-if (!$user) {
-    header('Location: cart.php');
-    exit();
-}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Payment</title>
-        <!--css-->
-        <link rel="stylesheet" href="../asset/css/admin.css">
     <link rel="stylesheet" href="../asset/css/style.css">
     <link rel="stylesheet" href="../asset/css/product.css">
     <!--Font family-->
@@ -53,23 +43,9 @@ if (!$user) {
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.0/css/boxicons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ASRoly_qC6lVWj--7YxvUQTKlMISK6IG3c-Js9mvMJuxVd4UW9U3BX87aSjgnE1_V-arJ6KmLaOVEujq"></script>
 </head>
 <body>
-    <style>
-        .continue-shopping{
-            color: #fff;
-        width: 100%;
-        padding: 10px 15px;
-        text-align: center;
-        margin-top: 10px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        background: #141b1fda;
-        font-family: "Poppins", sans-serif;
-        }
-    </style>
     <section class="payment-section">
         <div class="payment-container">
             <h1 style="margin-bottom: 20px;">Complete Your Payment</h1>
@@ -87,29 +63,22 @@ if (!$user) {
                 </div>
                 <div class="all-inputs">
                     <i class="bi bi-house"></i>
-                    <input type="text" style="width:100%" id="address" name="address" placeholder="Write here the address where the package should be delivered">
+                    <input type="text" style="width:100%" id="address" name="address" placeholder="write here the address where the package should delivered">
                 </div>
-                <div class="all-inputs" >
+                <div class="all-inputs" style="margin-bottom: 20px;">
                     <i class="bi bi-whatsapp"></i>
-                    <input style="width:100%" type="text" id="whatsapp" name="whatsapp" placeholder="Provide the WhatsApp number">
+                    <input style="width:100%" type="text" id="whatsapp" name="whatsapp" placeholder="Provide the whatsapp number ">
                 </div>
 
-                <div class="all-inputs">
-                    <i class="bi bi-credit-card"></i>
-                    <select id="payment-method" name="payment_method">
-                        <option value="mobilemoneyrwanda">Mobile Money (MTN Rwanda)</option>
-                        <option value="banktransfer">Bank Transfer</option>
-                    </select>
-                </div>
-                <p style="margin-bottom: 10px;margin-top:10px">Order Total: <span id="order-total"><?=number_format($totalorder, 2)?></span> RWF</p>
-                <button type="button" onclick="makePayment()" class="continue-shopping">Pay Now</button>
+                <p style="margin-bottom: 10px;">Order Total: <span id="order-total"><?=$order['total_amount']?></span>RWF</p>
+                <div id="paypal-button-container"></div>
             </form>
         </div>
     </section>
+
     <script>
         const countrySelect = document.getElementById('country');
         const orderTotalElement = document.getElementById('order-total');
-        const paymentMethodSelect = document.getElementById('payment-method');
         let orderTotal = parseFloat(<?=$totalorder?>);
         const orderQuantity = parseInt(<?=$order_quantity?>);
 
@@ -118,50 +87,62 @@ if (!$user) {
                 if (orderQuantity >= 20) {
                     orderTotal = parseFloat(<?=$totalorder?>) * 1.10;
                 } else {
-                    alert("For shipping out of Rwanda, the quantity of your shoes must be 20 or more.");
+                    alert("For shipping out of Rwanda, the quantity of your shoes must be 20 or more than 20.");
                     this.value = 'Rwanda';
                     orderTotal = parseFloat(<?=$totalorder?>);
                 }
             } else {
+                shippingDetails.style.display = 'none';
                 orderTotal = parseFloat(<?=$totalorder?>);
             }
             orderTotalElement.textContent = orderTotal.toFixed(2);
         });
 
-        function makePayment() {
-            const paymentMethod = paymentMethodSelect.value;
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: orderTotal.toFixed(2)
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
 
-            FlutterwaveCheckout({
-                public_key: "FLWPUBK_TEST-33e52f06e038469d6693230b8bc85b62-X",
-                tx_ref: "RX1_" + Math.floor((Math.random() * 1000000000) + 1),
-                amount: orderTotal,
-                currency: "RWF",  // Currency set to RWF
-                country: "RW",
-                payment_options: paymentMethod,
-                redirect_url: "http://localhost/onlineShoeStore/templates/confirmcheckout.php",
-                meta: {
-                    consumer_id: 23,
-                    consumer_mac: "92a3-912ba-1192a",
-                },
-                customer: {
-                    email: "<?php echo $user['email']; ?>",
-                    phone_number: "<?php echo $user['phone']; ?>",
-                    name: "<?php echo $user['firstname']; ?>",
-                },
-                callback: function (data) {
-                    console.log(data);
-                    window.location.href = "confirmcheckout.php";
-                },
-                onclose: function() {
-                    // close modal
-                },
-                customizations: {
-                    title: "Best Payment getway",
-                    description: "Payment for your order",
-                    logo: "img/favicon-32x32.png",
-                },
-            });
-        }
+                    // Gather shipping details
+                    const country = document.getElementById('country').value;
+                    const address = document.getElementById('address').value;
+                    const whatsapp = document.getElementById('whatsapp').value;
+
+                    // Send shipping details to the server
+                    fetch('save_shipping_details.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            order_id: '<?=$order_id?>',
+                            country: country,
+                            address: address,
+                            whatsapp: whatsapp
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Redirect to a success page
+                            window.location.href = 'payment_success.php';
+                        } else {
+                            alert('There was an issue saving the shipping details.');
+                        }
+                    });
+
+                });
+            }
+        }).render('#paypal-button-container');
     </script>
 </body>
 </html>

@@ -1,5 +1,4 @@
-1. createa pages for small image for being deleted easily
-2. implement a logic when a user put the number wchich is green than the stock it alert that quantity is not available in the stock
-3. shoes purchassed
-4. if the command is not completed you can pay in orders
-5. add a payment history page in admin
+
+3.when a payement is done send a message to the admin that teh payment has been completed
+4. Alert to the admin when there are 5 shoes in the stock and alert again when the stock is 0 
+5. add a payment history page (user side)

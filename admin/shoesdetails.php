@@ -2,6 +2,7 @@
 session_start();
 require_once('../controllers/database/db.php');
 require_once('../controllers/functions.php');
+notAdmin();
 $name = $brand = $size = $color = $price = $description = $photo = '';
 
 if(isset($_GET['shoe_id']) && !empty($_GET['shoe_id'])){
@@ -61,11 +62,11 @@ $colors = explode(',', $color);
             <div class="prod-type-item">
                 <p><img class="big-image" src="../templates/shoes/<?=$photo?>" alt=""></p>
                 <div style="display:flex; flex-wrap: wrap;">
-                    <p><img style="width: 97px;height:97px;cursor:pointer;object-fit:cover" class="small-image" src="../templates/shoes/<?=$photo?>" alt=""></p>
+                    <p><img style="width: 98px;height:97px;cursor:pointer;object-fit:cover" class="small-image" src="../templates/shoes/<?=$photo?>" alt=""></p>
                     <?php
                         while( $small_img = $query->fetch()){
                             ?>
-                                <p><img style="width: 97px;height:97px;cursor:pointer;object-fit:cover" class="small-image" src="../templates/small_images/<?=$small_img['shoe_image']?>" alt=""></p>
+                                <p><img style="width: 98px;height:97px;cursor:pointer;object-fit:cover" class="small-image" src="../templates/small_images/<?=$small_img['shoe_image']?>" alt=""></p>
 
                             <?php
                         }

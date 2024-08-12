@@ -37,7 +37,24 @@ function popup_slides(){
         <div class="popup hidden-popup" >
         <div class="popup-container">
             <h3>Dear Admin,</h3>
-            <p>Are you sure you want to delete  this shoe <br>from your system?</p>
+            <p>Are you sure you want to delete  this slide <br>from your system?</p>
+            <div style="margin-top: 20px; justify-content:space-between;display:flex" class="popup-btn">
+                <button style="cursor:pointer;" class="cancel-popup icons-link">Cancel</button>
+                <button style="cursor:pointer;" class="delete-popup icons-link">Delete</button>
+            </div>
+        </div>
+    </div>
+<?php
+}
+?>
+
+<?php
+function popup_small_images(){
+    ?>
+        <div class="popup hidden-popup" >
+        <div class="popup-container">
+            <h3>Dear Admin,</h3>
+            <p>Are you sure you want to delete this image <br>from your system?</p>
             <div style="margin-top: 20px; justify-content:space-between;display:flex" class="popup-btn">
                 <button style="cursor:pointer;" class="cancel-popup icons-link">Cancel</button>
                 <button style="cursor:pointer;" class="delete-popup icons-link">Delete</button>
@@ -98,9 +115,23 @@ function popup_delete_count($error) {
 function notconnected(){
     if (! isset($_SESSION['user'])) {
         // Redirect to the login page if not logged in
-        header("Location: login.php");
+        header("Location: ../templates/login.php");
         exit();
     }
+}
+
+function notAdmin(){
+    
+$db = new PDO("mysql:host=localhost;dbname=online_shoes_store", "root", "",
+ [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $query = $db->prepare('SELECT role FROM users WHERE role =?');
+    $query->execute(array($_SESSION['role']));
+     
+    if(($_SESSION['role']) != 'admin'){
+        header("Location: ../templates/login.php");
+        exit();
+    }
+   
 }
 function logout(){
     if(isset($_POST['logout'])){

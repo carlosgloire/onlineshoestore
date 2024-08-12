@@ -30,6 +30,11 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
     $order_query->execute([$user_id]);
     $order_id = $db->lastInsertId(); // Get the ID of the newly created order
 
+    // Insert a new order record for user
+    $order_query = $db->prepare('INSERT INTO order_user (user_id, order_date, status) VALUES (?, NOW(), "pending")');
+    $order_query->execute([$user_id]);
+    $order_id = $db->lastInsertId(); 
+
     // Insert each product in the order
     foreach ($_SESSION['panier'] as $item) {
         $product_id = $item['shoe_id'];
@@ -49,12 +54,20 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
             // Insert the product into the order_items table
             $item_query = $db->prepare('INSERT INTO order_item (order_id, shoe_id, quantity, total_price, color, size) VALUES (?, ?, ?, ?, ?, ?)');
             $item_query->execute([$order_id, $product_id, $quantity, $total_price, $colors, $sizes]);
+
+            // Insert the product into the order_items table for a user
+            $item_user_query = $db->prepare('INSERT INTO order_item_user (order_item_id, order_id, shoe_id, quantity, total_price, color, size) VALUES (?, ?, ?, ?, ?, ?, ?)');
+            $item_user_query->execute([null, $order_id, $product_id, $quantity, $total_price, $colors, $sizes]);
         }
     }
 
     // Update the total order amount
     $update_order_query = $db->prepare('UPDATE orders SET total_amount = ? WHERE order_id = ?');
     $update_order_query->execute([$order_total, $order_id]);
+
+    // Update the total order user amount
+    $update_order_user_query = $db->prepare('UPDATE order_user SET total_amount = ? WHERE order_id = ?');
+    $update_order_user_query->execute([$order_total, $order_id]);
 
     // Store order ID in session to be used on the payment page
     $_SESSION['order_id'] = $order_id;

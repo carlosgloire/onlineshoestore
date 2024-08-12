@@ -20,6 +20,7 @@ if (isset($_GET['shoe_id']) && !empty($_GET['shoe_id'])) {
         $description = $shoe['description'];
         $photo = $shoe['photo'];
         $shoe_type = $shoe['type'];
+        $stock = $shoe['stock'];
         $shoe_category = $shoe['category_id'];
     } else {
         echo '<script>alert("Shoe ID not found.");</script>';
@@ -39,6 +40,7 @@ if (isset($_POST['edit'])) {
     $shoe_color = htmlspecialchars($_POST['color']);
     $shoe_size = htmlspecialchars($_POST['size']);
     $shoe_price = htmlspecialchars($_POST['price']);
+    $shoe_stock = htmlspecialchars($_POST['stock']);
     $shoe_description = htmlspecialchars($_POST['description']);
     $new_shoe_type = htmlspecialchars($_POST['type']);
     $new_shoe_category = htmlspecialchars($_POST['category']);
@@ -82,8 +84,8 @@ if (isset($_POST['edit'])) {
             }
 
             // Update shoe details in the database
-            $update_query = $db->prepare('UPDATE shoes SET name=?, brand=?, color=?, price=?, description=?, type=?, category_id=?, photo=?, size=? WHERE shoe_id=?');
-            $update_result = $update_query->execute([$shoe_name, $shoe_brand, $shoe_color, $shoe_price, $shoe_description, $new_shoe_type, $new_shoe_category, $filename, $shoe_size, $shoe_id]);
+            $update_query = $db->prepare('UPDATE shoes SET name=?, brand=?, color=?, price=?,stock=?, description=?, type=?, category_id=?, photo=?, size=? WHERE shoe_id=?');
+            $update_result = $update_query->execute([$shoe_name, $shoe_brand, $shoe_color, $shoe_price,$shoe_stock, $shoe_description, $new_shoe_type, $new_shoe_category, $filename, $shoe_size, $shoe_id]);
 
             if ($update_result) {
                 $success = "Shoe details updated successfully";

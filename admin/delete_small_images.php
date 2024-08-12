@@ -1,16 +1,29 @@
 <?php
     session_start();
-    require_once('../controllers/send_news_letter.php');
+    require_once('../controllers/database/db.php');
+    //require_once('../controllers/delete_small_images.php');
+    require_once('../controllers/functions.php');
     require_once('../controllers/functions.php');
     notAdmin();
-?>
+    if (isset($_GET['shoe_id']) && !empty($_GET['shoe_id'])) {
+        $id = $_GET['shoe_id'];
+        $retrieveShoeId = $db->prepare('SELECT * FROM shoes WHERE shoe_id = ?');
+        $retrieveShoeId->execute(array($id));
+        $infos = $retrieveShoeId->fetch();
+        if($infos){
+            $id_fetched= $infos['shoe_id'];
+            $name=$infos['name'];
+        }
+       
+    }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter</title>
+    <title>Related images for <?=$name?></title>
 
     <!--css-->
     <link rel="stylesheet" href="../asset/css/style.css">
@@ -32,6 +45,7 @@
 <body>
 
     <!-- Admin header -->
+
     <header class="header-admin">
         <div>
             <h2>Dashboard</h2>
@@ -53,15 +67,15 @@
                     <i class="bi bi-bookmark-star"></i>
                     <span>Categories</span>
                 </a>
-                <a href="shoes.php">
+                <a class="activ" href="shoes.php">
                     <i class="fa-solid fa-socks"></i>
                     <span>Shoes</span>
                 </a>
-                <a class="activ" href="#">
+                <a href="newsletter.php">
                     <i class="bi bi-card-text"></i>
                     <span>Newsletter</span>
                 </a>
-                <a href="slide.php">
+                <a  href="slide.php">
                     <i class="bi bi-file-image"></i>
                     <span>Slides</span>
                 </a>
@@ -75,27 +89,36 @@
                 </a>
             </nav>
         </div>
-        <div class="second-bloc">
-            <div class="newsletter-form">
-                <form action="" method="post">
-                    <h3>Newsletter</h3>
-                    <div class="all-inputs">
-                        <input type="text" name="subject" placeholder="Message title">
-                    </div>
-                    <div>
-                        <textarea name="message" id="" placeholder="Message..."></textarea>
-                    </div>
 
-                    <div class="submit">
-                        <input type="submit" name="send" value="Send message">
-                    </div>
-                    <p style="color:red;font-size:13px;text-align:center"><?=$error?></p>
-                    <p style="color:green;font-size:13px;text-align:center"><?=$success?></p>
-                </form>
+        <div class="second-bloc">
+            <div class="slide-details">
+               <h2 style="text-align: center;">Related images for <?=$name?></h2>
+                <div class="slide-items">
+                    <?php
+                        $query = $db->prepare('SELECT * FROM small_images WHERE shoe_id= ?');
+                        $query->execute(array($id));
+                        $fetch_images = $query->fetchAll(PDO::FETCH_ASSOC);
+                        if(! $fetch_images){
+                            ?><p style="color: red;"><?='No related images available for this shoe'?></p><?php
+                        }else{
+                            foreach($fetch_images as $slide){
+                                ?>
+    
+                                <div>
+                                    <p><img src="../templates/small_images/<?=$slide['shoe_image']?>" alt=""></p>
+                                    <i gallery_id="<?= $slide['id'] ?>" class="bi bi-trash3 delete"></i>
+                                </div>
+                                <?php
+                            }
+                        }
+                    ?>
+                  
+                </div>
             </div>
         </div>
     </section>
-
+    <?=popup_small_images()?>
+    <script src="../asset/javascript/deelete_small_images.js"></script>
 </body>
 
 </html>

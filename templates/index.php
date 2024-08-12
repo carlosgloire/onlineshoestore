@@ -2,7 +2,7 @@
 session_start();
 require_once('../controllers/database/db.php');
 require_once('../controllers/functions.php');
-notconnected();
+
 logout();
 // Calculate the total quantity of all orders
 $total_quantity = 0;
@@ -27,7 +27,6 @@ if (isset($_SESSION['user_id'])) {
     <title>Home</title>
     <!--css-->
     <link rel="stylesheet" href="../asset/css/style.css">
-    <link rel="stylesheet" href="../asset/css/product.css">
     <!--Font family-->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
@@ -52,7 +51,7 @@ if (isset($_SESSION['user_id'])) {
                             <div class="indicator">
                                 <p ><img style="width: 27px;height: 27px;object-fit:cover;border-radius:50%;cursor:pointer;" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
                                 <div class="dashboard-user">
-                                    <a href="dashboard.html">
+                                    <a href="dashboard.php">
                                         <i class="bi bi-person-bounding-box"></i>
                                         <span><?=$user['firstname']." ".$user['lastname']?></span>
                                     </a>
@@ -213,7 +212,7 @@ if (isset($_SESSION['user_id'])) {
         </div>
         <div class="prod-container">
         <?php
-            $query=$db->prepare('SELECT * FROM shoes LIMIT 6');
+            $query=$db->prepare('SELECT * FROM shoes LIMIT 8');
             $query->execute();
             $shoes = $query->fetchAll();
             if(!$shoes){
@@ -248,7 +247,7 @@ if (isset($_SESSION['user_id'])) {
                                         
                                     <?php
                                 ?>
-                                <p style="font-size: 0.8rem;">Click 👉 <a style="font-weight: bold;color:#aca356da" href="reviews/review.html?shoe_id=<?=$shoe_id?>" >here</a> to review this shoe</p>
+                                <p style="font-size: 0.8rem;">Review this shoe 👉 <a style="font-weight: bold;color:#aca356da" href="reviews/review.html?shoe_id=<?=$shoe_id?>" >here</a></p>
                                 <div class="panier">
                                     <a href="shoesdetails.php?shoe_id=<?=$shoe_id?>"><i class="bi bi-cart"></i></a>
                                 </div>
@@ -302,7 +301,7 @@ if (isset($_SESSION['user_id'])) {
             <div class="all-categories">
                 <div class="shoes-item men-shoes">
                     <?php
-                        $query = $db->prepare("SELECT photo,name,shoe_id FROM shoes WHERE type = 'Men'");
+                        $query = $db->prepare("SELECT *FROM shoes WHERE type = 'Men'");
                         $query->execute();
                         $men = $query->fetchAll(PDO::FETCH_ASSOC);
                         if(! $men){
@@ -311,14 +310,38 @@ if (isset($_SESSION['user_id'])) {
                         else{
                             foreach($men as $man){
                                 ?>
-                                <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>">
-                                    <div class="shoes">
-                                        <p><img src="../templates/shoes/<?=$man['photo']?>" alt=""></p>
-                                        <div class="overlay">
-                                            <span><?=$man['name']?></span><br>
+                                <div class="prod-item">
+                                    <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>"><img src="shoes/<?=$man['photo']?>" alt=""></a>
+                                    <div class="item">
+                                        <div class="item-details">
+                                            <p ><?=$man['name']?> </p>
+                                            <span ><strong><?=$man['price']?> RWF</strong></span>
+                                        </div>
+                                        <?php
+                                            $sql = 'SELECT AVG(rating) as avg_rating FROM reviews WHERE shoe_id = ?';
+                                            $stmt = $db->prepare($sql);
+                                            $stmt->execute([$man['shoe_id']]);
+                                            $result = $stmt->fetch();
+                                            $avg_rating = round($result['avg_rating'], 1);
+                                            ?>
+                                            
+                                                <div class="stars">
+                                                    <?php
+                                                    for ($i = 1; $i <= 5; $i++) {
+                                                        echo $i <= $avg_rating ? "<i  class='bx bxs-star'></i>" : '<i style="font-size:12px;position:relative;top:-2px" class="fa-regular fa-star"></i>';
+                                                    }
+                                                    ?>
+                                                    <span style="color: black;color: gray; font-size:12px;position:relative;top:-2px">(<?php echo $avg_rating; ?>)</span>
+                                                </div>
+                                                
+                                            <?php
+                                        ?>
+                                        <p style="font-size: 0.8rem;">Review this shoe 👉 <a style="font-weight: bold;color:#aca356da" href="reviews/review.html?shoe_id=<?=$man['shoe_id']?>" >here</a></p>
+                                        <div class="panier">
+                                            <a href="shoesdetails.php?shoe_id=<?=$man['shoe_id']?>"><i class="bi bi-cart"></i></a>
                                         </div>
                                     </div>
-                                </a>
+                                </div>
                             <?php
                             }
                         }

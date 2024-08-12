@@ -10,16 +10,22 @@ if (!isset($_GET['order_item_id']) || empty($_GET['order_item_id'])) {
     echo '<script>window.location.href="dashboard.php";</script>';
     exit;
 }
+if (!isset($_GET['order_id']) || empty($_GET['order_id'])) {
+    echo '<script>alert("No order item ID provided.");</script>';
+    echo '<script>window.location.href="dashboard.php";</script>';
+    exit;
+}
 
 $order_item_id = $_GET['order_item_id'];
-
+$order_id = $_GET['order_id'];
 // Fetch the order item details
 $query = $db->prepare("SELECT oi.*, s.name AS shoe_name, s.photo, s.price 
-                       FROM order_item oi 
+                       FROM order_item_user oi 
                        JOIN shoes s ON oi.shoe_id = s.shoe_id 
                        WHERE oi.order_item_id = ?");
 $query->execute([$order_item_id]);
 $order_item = $query->fetch(PDO::FETCH_ASSOC);
+
 
 if (!$order_item) {
     echo '<script>alert("Order item not found.");</script>';
@@ -60,6 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $total_price = $price * $quantity;
 
     $update_query = $db->prepare("UPDATE order_item 
+                                  SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? 
+                                  WHERE order_id = ?");
+    $update_query->execute([$shoe_id, $quantity, $sizes, $colors, $total_price, $order_id]);
+    
+    
+    $update_query = $db->prepare("UPDATE order_item_user 
                                   SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? 
                                   WHERE order_item_id = ?");
     $update_query->execute([$shoe_id, $quantity, $sizes, $colors, $total_price, $order_item_id]);

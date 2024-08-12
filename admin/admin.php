@@ -1,7 +1,10 @@
 <?php
+session_start();
 $error = null;
 $success = null;
-require_once('../controllers/database/db.php'); // Adjust path as needed
+require_once('../controllers/database/db.php');
+require_once('../controllers/functions.php');
+notAdmin();
 
 // Fetch the count of category_id and sum of stock from the joined tables
 $query = $db->prepare('

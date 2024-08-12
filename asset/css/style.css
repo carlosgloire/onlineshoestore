@@ -366,8 +366,8 @@ header .header-content {
 }
 
 .prod-item img {
-    width: 280px;
-    height: 280px;
+    width: 240px;
+    height: 240px;
     object-fit: cover;
     border-radius: 10px;
     background-color: #ebebeb9c;
@@ -391,7 +391,7 @@ header .header-content {
 
 .prod-item .item .panier {
     width: fit-content;
-    padding: 12px 15px;
+    padding: 8px 11px;
     border-radius: 50%;
     display: flex;
     margin-left: auto;
@@ -556,8 +556,8 @@ button {
 }
 
 .shoes-item .shoes img {
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     background-color: #c2c2c2;
 }
@@ -733,3 +733,21 @@ footer {
     background-color: white;
     padding: 40px;
  }
+
+
+.continue_shopping{
+    color: #fff;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: #141b1fda;
+    font-family: "Poppins", sans-serif;
+   
+}
+/*---------------------------------------/
+#carrousel
+/---------------------------------------*/

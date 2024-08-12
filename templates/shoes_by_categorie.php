@@ -77,7 +77,7 @@ if (isset($_SESSION['user_id'])) {
                             <div class="indicator">
                                 <p><img style="width: 30px;height: 30px;object-fit:cover;border-radius:50%;cursor:pointer" src="../templates/profile_photo/<?=$user['photo']?>" alt=""><i style="color: white;font-weight:bold" class="bi bi-plus"></i></p>
                                 <div class="dashboard-user">
-                                    <a href="dashboard.html">
+                                    <a href="dashboard.php">
                                         <i class="bi bi-person-bounding-box"></i>
                                         <span><?=$user['firstname']." ".$user['lastname']?></span>
                                     </a>

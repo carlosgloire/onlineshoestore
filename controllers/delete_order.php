@@ -12,7 +12,7 @@ if (!isset($_GET['order_item_id']) || empty($_GET['order_item_id'])) {
 
 $order_item_id = $_GET['order_item_id'];
 
-$delete_query = $db->prepare("DELETE FROM order_item WHERE order_item_id = ?");
+$delete_query = $db->prepare("DELETE FROM order_item_user WHERE order_item_id = ?");
 $delete_query->execute([$order_item_id]);
 
 echo '<script>alert("Order item deleted successfully.");</script>';

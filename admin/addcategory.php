@@ -1,4 +1,9 @@
-<?php require_once('../controllers/addcategory.php')?>
+<?php
+session_start();
+ require_once('../controllers/addcategory.php');
+ require_once('../controllers/functions.php');
+ notAdmin();
+?>
 <!DOCTYPE html>
 <html lang="en">
 

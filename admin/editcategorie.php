@@ -1,5 +1,8 @@
 <?php
-    require_once('../controllers/editcategory.php')
+    session_start();
+    require_once('../controllers/editcategory.php');
+    require_once('../controllers/functions.php');
+    notAdmin();
 ?>
 <!DOCTYPE html>
 <html lang="en">

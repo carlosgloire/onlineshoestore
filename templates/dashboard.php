@@ -19,10 +19,15 @@ $query = $db->prepare("
         oi.color, 
         oi.order_item_id,  
         oi.quantity,  
-        oi.total_price
-    FROM orders o
-    JOIN order_item oi ON o.order_id = oi.order_id
+        oi.total_price,
+        sh.shipment_country as shipping_country,
+        sh.address as shipping_address,
+        sh.whatsapp_number,
+        sh.amount
+    FROM order_user o
+    JOIN order_item_user oi ON o.order_id = oi.order_id
     JOIN shoes s ON oi.shoe_id = s.shoe_id
+    LEFT JOIN shipment sh ON o.order_id = sh.order_id
     WHERE o.user_id = ?
     ORDER BY o.order_date DESC
 ");
@@ -102,6 +107,10 @@ foreach ($orders as $order) {
                     <?php foreach ($orders_by_date as $order_id => $items): 
                         $total_order_price = 0;
                         $pending_order_found = false;
+                        $shipment_country = $items[0]['shipping_country'] ?? '';
+                        $shipping_address = $items[0]['shipping_address'] ?? '';
+                        $whatsapp_number = $items[0]['whatsapp_number'] ?? '';
+                        $amt = $items[0]['amount'] ?? '';
                         foreach ($items as $item):
                             $total_order_price += $item['total_price'];
                             if ($item['order_status'] == 'pending') {
@@ -134,7 +143,7 @@ foreach ($orders as $order) {
                                     <span><?php echo htmlspecialchars($item['price']); ?></span>
                                 </div>
                                 <div class="delete" style="display: grid;gap:10px">
-                                    <a href="edit_order.php?order_item_id=<?= $item['order_item_id'] ?>" style="color: black;">
+                                    <a href="edit_order.php?order_item_id=<?= $item['order_item_id'] ?>&order_id=<?= $order_id ?>" style="color: black;">
                                         <i class="bi bi-pencil-square"></i> Edit
                                     </a>
                                     <a href="#" class="delete delete_item" gallery_id="<?= $item['order_item_id'] ?>">
@@ -151,6 +160,11 @@ foreach ($orders as $order) {
                         </div>
                     <?php endforeach; ?>
                     <p style="text-align: right;margin-right: 30px;margin-top:20px;font-weight:600">Total order price: <?= htmlspecialchars($total_order_price) ?> RWF</p>
+                    <?php if ($shipment_country || $shipping_address || $whatsapp_number): ?>
+                        <p style="text-align: right;margin-right: 30px;font-weight:600">Shipped at: <?= htmlspecialchars($shipment_country) ?>, <?= htmlspecialchars($shipping_address) ?></p>
+                        <p style="text-align: right;margin-right: 30px;">WhatsApp: <?= htmlspecialchars($whatsapp_number) ?></p>
+                        <p style="text-align: right;margin-right: 30px;">Total order amount shipment included: <?= htmlspecialchars($amt)?> RWF</p>
+                    <?php endif; ?>
                     <?php if ($pending_order_found): ?>
                         <a href="payment_order.php?order_id=<?= $order_id ?>" class="pay">Pay now</a>
                     <?php else: ?>

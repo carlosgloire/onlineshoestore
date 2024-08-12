@@ -1,6 +1,9 @@
-<?php 
+<?php
+    session_start();
     require_once('../controllers/database/db.php');
     require_once('../controllers/add_shoes.php');
+    require_once('../controllers/functions.php');
+    notAdmin();
     ?>
 <!DOCTYPE html>
 <html lang="en">

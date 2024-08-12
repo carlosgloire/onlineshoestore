@@ -1,5 +1,8 @@
 <?php
+    session_start();
     require_once('../controllers/small_images.php');
+    require_once('../controllers/functions.php');
+    notAdmin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +41,15 @@
             <i class="bi bi-x"></i>
         </div>
     </header>
-
+   <style>
+         a{
+            text-align:center;
+            color:#141b1fda;
+         }
+         a:hover{
+            text-decoration: underline;
+         }
+   </style>
     <section class="admin-section">
         <div class="first-bloc">
             <nav>
@@ -73,16 +84,18 @@
             </nav>
         </div>
         <div class="second-bloc">
-            <div class="newsletter-form">
+            <div class="newsletter-form" >
                 <form action="" method="post" enctype="multipart/form-data">
                     <h3>Add a related shoe image for <?=$name?></h3>
                     <div class="all-inputs">
                         <input type="file" name="uploadfile">
                     </div>
 
-                    <div class="submit">
+                    <div class="submit" style="margin-bottom:10px">
                         <input style="cursor: pointer;" type="submit" name="add" value="Add a related">
                     </div>
+                    <a href="delete_small_images.php?shoe_id=<?=$id?>" >Delete related images</a>
+
                     <p style="color:red"><?=$error?></p><p style="color: green;"><?=$success?></p>
                 </form>
             </div>

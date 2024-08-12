@@ -28,7 +28,7 @@
         </div>
         <div>
             <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" required />
+            <input type="tel" id="phone" name="phone" />
         </div>
         <div>
             <label for="paymentMethod">Payment Method</label>
