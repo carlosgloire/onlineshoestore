@@ -46,6 +46,39 @@ $totalShipmentsQuery = $db->prepare('SELECT COUNT(shipment_id) AS total_shipment
 $totalShipmentsQuery->execute();
 $totalShipmentsResult = $totalShipmentsQuery->fetch(PDO::FETCH_ASSOC);
 $totalShipments = $totalShipmentsResult['total_shipments'];
+
+// Fetch payment and shoes data per month
+$paymentQuery = $db->prepare('
+    SELECT 
+        DATE_FORMAT(p.payment_date, "%Y-%m") AS month,
+        SUM(p.amount) AS total_amount,
+        SUM(oi.quantity) AS total_shoes
+    FROM 
+        payment p
+    LEFT JOIN 
+        orders o ON p.order_id = o.order_id
+    LEFT JOIN 
+        order_item oi ON o.order_id = oi.order_id
+    WHERE 
+        p.status = "completed"
+    GROUP BY 
+        DATE_FORMAT(p.payment_date, "%Y-%m")
+    ORDER BY 
+        month
+');
+$paymentQuery->execute();
+$paymentResults = $paymentQuery->fetchAll(PDO::FETCH_ASSOC);
+
+$months = [];
+$amounts = [];
+$quantities = [];
+
+foreach ($paymentResults as $payment) {
+    $months[] = $payment['month'];
+    $amounts[] = (float) $payment['total_amount'];
+    $quantities[] = (int) $payment['total_shoes'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +103,11 @@ $totalShipments = $totalShipmentsResult['total_shipments'];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!--Highcharts-->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
 
 <body>
@@ -120,7 +158,7 @@ $totalShipments = $totalShipmentsResult['total_shipments'];
             </nav>
         </div>
         <div class="second-bloc">
-            <div class="all-items">
+            <div class="all-items" style='display:grid'>
                 <div class="bloc-content">
                     <div>
                         <i class="bi bi-people"></i>
@@ -161,9 +199,79 @@ $totalShipments = $totalShipmentsResult['total_shipments'];
                         <span><?php echo $totalShipments; ?></span>
                     </div>
                 </div>
+                <div id="payment-chart" style="width: 100%; height: 400px; margin-top: 50px;"></div>
             </div>
         </div>
     </section>
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Highcharts.chart('payment-chart', {
+            chart: {
+                type: 'line',
+                style: {
+                    fontFamily: 'Poppins, sans-serif'
+                }
+            },
+            title: {
+                text: 'Monthly Payments and Shoes Purchased',
+                style: {
+                    fontFamily: 'Poppins, sans-serif'
+                }
+            },
+            xAxis: {
+                categories: <?php echo json_encode($months); ?>,
+                crosshair: true,
+                labels: {
+                    style: {
+                        fontFamily: 'Poppins, sans-serif'
+                    }
+                }
+            },
+            yAxis: [{
+                title: {
+                    text: 'Total Amount',
+                    style: {
+                        fontFamily: 'Poppins, sans-serif'
+                    }
+                },
+                labels: {
+                    style: {
+                        fontFamily: 'Poppins, sans-serif'
+                    }
+                }
+            }, {
+                title: {
+                    text: 'Total Shoes Purchased',
+                    style: {
+                        fontFamily: 'Poppins, sans-serif'
+                    }
+                },
+                labels: {
+                    style: {
+                        fontFamily: 'Poppins, sans-serif'
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true,
+                style: {
+                    fontFamily: 'Poppins, sans-serif'
+                }
+            },
+            series: [{
+                name: 'Total Amount',
+                data: <?php echo json_encode($amounts);?>
+            }, {
+                name: 'Total Shoes Purchased',
+                data: <?php echo json_encode($quantities); ?>,
+                yAxis: 1
+            }]
+        });
+    });
+</script>
 
 </body>
 

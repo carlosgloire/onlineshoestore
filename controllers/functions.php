@@ -128,7 +128,7 @@ $db = new PDO("mysql:host=localhost;dbname=online_shoes_store", "root", "",
     $query->execute(array($_SESSION['role']));
      
     if(($_SESSION['role']) != 'admin'){
-        header("Location: ../templates/login.php");
+        header("Location: ../templates/");
         exit();
     }
    

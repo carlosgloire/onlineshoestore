@@ -56,8 +56,8 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
             $item_query->execute([$order_id, $product_id, $quantity, $total_price, $colors, $sizes]);
 
             // Insert the product into the order_items table for a user
-            $item_user_query = $db->prepare('INSERT INTO order_item_user (order_item_id, order_id, shoe_id, quantity, total_price, color, size) VALUES (?, ?, ?, ?, ?, ?, ?)');
-            $item_user_query->execute([null, $order_id, $product_id, $quantity, $total_price, $colors, $sizes]);
+            $item_query = $db->prepare('INSERT INTO order_item_user (order_id, shoe_id, quantity, total_price, color, size) VALUES (?, ?, ?, ?, ?, ?)');
+            $item_query->execute([$order_id, $product_id, $quantity, $total_price, $colors, $sizes]);
         }
     }
 

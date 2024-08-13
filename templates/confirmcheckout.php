@@ -22,6 +22,9 @@ $payment_query->execute([$order_id, 'Flutterwave', $payment_status, $amount]);
 $update_order_query = $db->prepare('UPDATE orders SET status = "completed" WHERE order_id = ?');
 $update_order_query->execute([$order_id]);
 
+$update_order_query = $db->prepare('UPDATE order_user SET status = "completed" WHERE order_id = ?');
+$update_order_query->execute([$order_id]);
+
 // Retrieve all items in the order
 $order_items_query = $db->prepare('SELECT shoe_id, quantity FROM order_item WHERE order_id = ?');
 $order_items_query->execute([$order_id]);
