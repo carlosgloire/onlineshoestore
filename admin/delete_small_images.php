@@ -83,9 +83,9 @@
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>
-                <a href="shipment.html">
-                    <i class="bi bi-flower2"></i>
-                    <span>Shipment</span>
+                <a href="payment_history.php">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <span>Payment history</span>
                 </a>
             </nav>
         </div>

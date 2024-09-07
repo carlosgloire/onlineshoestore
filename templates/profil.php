@@ -66,14 +66,14 @@ if ($user) {
                         <i class="bi bi-person-check"></i>
                         <span>My profile</span>
                     </a>
-                    <a href="#">
+                    <a href="payment_history.php">
                         <i class="bi bi-credit-card-2-front"></i>
-                        <span>Payment</span>
+                        <span>Payment history</span>
                     </a>
-                    <a href="#" style="display: flex;align-items:center;gap:5px">
+                    <a href="#">
                         <i class="bi bi-box-arrow-in-right"></i>
                         <form action="" method="post" style="margin-top: -3px;">
-                            <button name="logout"><span style="color:white">Log out</span></button>
+                            <button name="logout" style="color: white;"><span>Log out</span></button>
                         </form>
                     </a>
                 </nav>

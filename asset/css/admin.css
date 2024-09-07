@@ -133,7 +133,9 @@
 .bloc-content div:hover i {
     color: #141b1fda;
 }
-
+input{
+    width:100%
+}
 
 /* ------------------------- /
 #Newsletter

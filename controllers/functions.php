@@ -141,3 +141,92 @@ function logout(){
     }
 }
 
+// Function to send email
+function sendStockAlertEmail($mysqli, $admin_email) {
+    // Check if shoes have reached stock of 5 or less
+    $query = "SELECT * FROM shoes WHERE stock <= 5";
+    $result = $mysqli->query($query);
+
+    if ($result->num_rows > 0) {
+        $mailer = require("../controllers/mail/mailer.php");
+
+        // Initialize variables for email content
+        $subject = "Alert: Shoe Stock Update";
+        $email_body = <<<END
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    padding: 20px;
+                }
+                .container {
+                    background-color: #fff;
+                    padding: 30px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    white-space: pre-wrap; /* Preserve white space and line breaks */
+                }
+                .shoe {
+                    margin-bottom: 20px;
+                    padding-bottom: 10px;
+                    border-bottom: 1px solid #ddd;
+                }
+                a {
+                    color: #1a73e8;
+                    text-decoration: none;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <p><strong>Alert: Shoe Stock Update</strong></p>
+END;
+
+        // Loop through shoes with stock 5 or less and append to email body
+        while ($row = $result->fetch_assoc()) {
+            $shoe_name = $row['name'];
+            $shoe_stock = $row['stock'];
+            $shoeId = $row['shoe_id'];
+            $update_link = "http://localhost/onlineShoeStore/admin/editshoe.php?shoe_id=$shoeId";
+
+            $email_body .= <<<END
+                <div class="shoe">
+                    <p><strong>Shoe:</strong> $shoe_name</p>
+                    <p><strong>Current Stock:</strong> $shoe_stock</p>
+                    <p><a href="$update_link">Update Stock for $shoe_name</a></p>
+                </div>
+END;
+        }
+
+        // Close the email body
+        $email_body .= <<<END
+                <p>Please take necessary action.</p>
+            </div>
+        </body>
+        </html>
+END;
+
+        $mailer->setFrom('noreply@yourdomain.com', 'ONLINE SHOES STORING MANAGEMENT SYSTEM'); // Set a default sender
+        $mailer->Subject = html_entity_decode($subject); // Decode HTML entities in subject
+        $mailer->CharSet = 'UTF-8'; // Set charset to UTF-8
+        $mailer->Body = $email_body;
+        $mailer->isHTML(true);
+
+        // Set the recipient to the admin email
+        $mailer->addAddress($admin_email, 'Admin'); // Admin's email address
+
+        try {
+            $mailer->send();
+            echo "";
+        } catch (Exception $e) {
+            echo "";
+        }
+    } else {
+        echo "";
+    }
+}

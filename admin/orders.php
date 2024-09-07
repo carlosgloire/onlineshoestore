@@ -110,7 +110,7 @@ foreach ($orders as $order) {
                 <a href="newsletter.php"><i class="bi bi-card-text"></i><span>Newsletter</span></a>
                 <a href="slide.php"><i class="bi bi-file-image"></i><span>Slides</span></a>
                 <a class="activ" href="#"><i class="bi bi-border"></i><span>Orders</span></a>
-                <a href="shipment.html"><i class="bi bi-flower2"></i><span>Shipment</span></a>
+                <a href="payment_history.php"> <i class="bi bi-credit-card-2-front"></i><span>Payment history</span></a>
             </nav>
         </div>
         <div class="right-side" style="margin-bottom: 30px;">

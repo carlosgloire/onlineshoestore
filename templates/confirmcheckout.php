@@ -2,16 +2,23 @@
 session_start();
 require_once('../controllers/database/db.php');
 
-if (!isset($_SESSION['order_id'])) {
+if (!isset($_GET['order_id'])) {
     header('Location: cart.php');
     exit();
 }
 
-$order_id = $_SESSION['order_id'];
-$country = $_GET['country'];
-$address = $_GET['address'];
-$whatsapp = $_GET['whatsapp'];
-$amount = $_GET['amount'];
+$order_id = $_GET['order_id'];
+$country = isset($_GET['country']) ? $_GET['country'] : '';
+$address = isset($_GET['address']) ? $_GET['address'] : '';
+$whatsapp = isset($_GET['whatsapp']) ? $_GET['whatsapp'] : '';
+$amount = isset($_GET['amount']) ? $_GET['amount'] : 0;  // Set default value or handle gracefully
+
+if (!$country || !$address || !$whatsapp || !$amount) {
+    // Handle missing parameters gracefully, e.g., redirect to an error page or back to payment.php
+    header('Location: payment.php');
+    exit();
+}
+
 $payment_status = "completed"; // Set the payment status as completed
 
 // Store payment details in the payment table
@@ -22,6 +29,7 @@ $payment_query->execute([$order_id, 'Flutterwave', $payment_status, $amount]);
 $update_order_query = $db->prepare('UPDATE orders SET status = "completed" WHERE order_id = ?');
 $update_order_query->execute([$order_id]);
 
+// Update order status to 'completed'
 $update_order_query = $db->prepare('UPDATE order_user SET status = "completed" WHERE order_id = ?');
 $update_order_query->execute([$order_id]);
 
@@ -48,5 +56,6 @@ unset($_SESSION['panier']);
 
 // Redirect to payment success page
 header('Location: payment_sucess.php');
+
 exit();
 ?>

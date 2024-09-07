@@ -70,9 +70,9 @@
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>
-                <a href="shipment.html">
-                    <i class="bi bi-flower2"></i>
-                    <span>Shipment</span>
+                <a href="payment_history.php">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <span>Payment history</span>
                 </a>
             </nav>
         </div>
@@ -117,10 +117,10 @@
                         <input type="text" id="stock" name="stock"  value="<?= isset($stock)? $stock:''?>">
                     </div>
                     <div class="all-inputs">
-                        <input type="text" id="color" name="color" placeholder="Colors"  value="<?= isset($color)? $color:''?>">
+                        <input type="text" id="color" name="color"   value="<?= isset($color)? $color:''?>">
                     </div>
                     <div class="all-inputs">
-                        <input type="number" id="price" name="price" placeholder="Price" style="width:100%"  value="<?= isset($price)? $price:''?>">
+                        <input type="number" id="price" name="price" style="width:100%"  value="<?= isset($price)? $price:''?>">
                     </div>
                     <div class="all-inputs">
                         <textarea id="description" name="description" rows="4" placeholder="Shoe description"><?= isset($description)? $description:''?></textarea>

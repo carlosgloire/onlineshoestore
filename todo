@@ -1,4 +1,2 @@
-
-3.when a payement is done send a message to the admin that teh payment has been completed
-4. Alert to the admin when there are 5 shoes in the stock and alert again when the stock is 0 
-5. add a payment history page (user side)
+1. ajote du carroussel aux produits
+2. lier le carte bancaire avec flutter wave 

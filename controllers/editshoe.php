@@ -88,9 +88,14 @@ if (isset($_POST['edit'])) {
             $update_result = $update_query->execute([$shoe_name, $shoe_brand, $shoe_color, $shoe_price,$shoe_stock, $shoe_description, $new_shoe_type, $new_shoe_category, $filename, $shoe_size, $shoe_id]);
 
             if ($update_result) {
+                echo "<script>alert('Shoe details updated successfully');</script>";
+                echo '<script>window.location.href="../admin/shoes.php";</script>';
+                exit;
                 $success = "Shoe details updated successfully";
             } else {
-                $error = "Failed to update shoe details";
+                echo "<script>alert('Failed to update shoe details');</script>";
+                echo '<script>window.location.href="../admin/shoes.php";</script>';
+                exit;
             }
         }
     }

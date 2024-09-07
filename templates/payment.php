@@ -27,7 +27,7 @@ $quantity_query->execute([$order_id]);
 $order_quantity = $quantity_query->fetchColumn();
 
 // Fetch user details
-$user_query = $db->prepare('SELECT email, phone, firstname FROM users WHERE user_id = ?');
+$user_query = $db->prepare('SELECT email, phone, firstname,lastname FROM users WHERE user_id = ?');
 $user_query->execute([$user_id]);
 $user = $user_query->fetch();
 
@@ -54,6 +54,7 @@ if (!$user) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script type="text/javascript" src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
 </head>
 <body>
     <style>
@@ -110,20 +111,21 @@ if (!$user) {
         const countrySelect = document.getElementById('country');
         const orderTotalElement = document.getElementById('order-total');
         const paymentMethodSelect = document.getElementById('payment-method');
-        let orderTotal = parseFloat(<?=$totalorder?>);
-        const orderQuantity = parseInt(<?=$order_quantity?>);
+        let orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
+        const orderQuantity = parseInt(<?= json_encode($order_quantity) ?>);
+        const orderId = <?= json_encode($order_id) ?>;
 
         countrySelect.addEventListener('change', function() {
             if (this.value !== 'Rwanda') {
                 if (orderQuantity >= 20) {
-                    orderTotal = parseFloat(<?=$totalorder?>) * 1.10;
+                    orderTotal = parseFloat(<?= json_encode($totalorder) ?>) * 1.10;
                 } else {
                     alert("For shipping out of Rwanda, the quantity of your shoes must be 20 or more.");
                     this.value = 'Rwanda';
-                    orderTotal = parseFloat(<?=$totalorder?>);
+                    orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
                 }
             } else {
-                orderTotal = parseFloat(<?=$totalorder?>);
+                orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
             }
             orderTotalElement.textContent = orderTotal.toFixed(2);
         });
@@ -133,16 +135,20 @@ if (!$user) {
             const country = document.getElementById('country').value;
             const address = document.getElementById('address').value;
             const whatsapp = document.getElementById('whatsapp').value;
-            const redirectUrl = country === 'Rwanda' ? 'confirmcheckout.php' : 'shipment.php';
+            const amount = orderTotal.toFixed(2); // Ensure amount is formatted correctly
+
+            const redirectUrl = country === 'Rwanda' ? 
+                `confirmcheckout.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}` : 
+                `shipment.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}`;
 
             FlutterwaveCheckout({
                 public_key: "FLWPUBK_TEST-33e52f06e038469d6693230b8bc85b62-X",
                 tx_ref: "RX1_" + Math.floor((Math.random() * 1000000000) + 1),
-                amount: orderTotal,
+                amount: parseFloat(amount),
                 currency: "RWF",
                 country: "RW",
                 payment_options: paymentMethod,
-                redirect_url: `http://localhost/onlineShoeStore/templates/${redirectUrl}?country=${country}&address=${address}&whatsapp=${whatsapp}&amount=${orderTotal}`,
+                redirect_url: `http://localhost/onlineShoeStore/templates/${redirectUrl}`,
                 meta: {
                     consumer_id: 23,
                     consumer_mac: "92a3-912ba-1192a",
@@ -150,7 +156,7 @@ if (!$user) {
                 customer: {
                     email: "<?php echo $user['email']; ?>",
                     phone_number: "<?php echo $user['phone']; ?>",
-                    name: "<?php echo $user['firstname']; ?>",
+                    name: "<?php echo $user['firstname'].' '.$user['lastname']; ?>",
                 },
                 callback: function (data) {
                     console.log(data);

@@ -19,7 +19,7 @@ if (!isset($_GET['order_id']) || empty($_GET['order_id'])) {
 $order_item_id = $_GET['order_item_id'];
 $order_id = $_GET['order_id'];
 // Fetch the order item details
-$query = $db->prepare("SELECT oi.*, s.name AS shoe_name, s.photo, s.price 
+$query = $db->prepare("SELECT oi.*, s.name AS shoe_name, s.photo, s.price,s.shoe_id
                        FROM order_item_user oi 
                        JOIN shoes s ON oi.shoe_id = s.shoe_id 
                        WHERE oi.order_item_id = ?");
@@ -101,35 +101,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"
     />
 </head>
+
 <body>
     <section class="login-section">
         <div class="login">
             <h2>Edit Order Item</h2>
             <form method="POST">
                 <div class="form-group">
-                    <label for="shoe_id">Shoe Name:</label>
+                    <label style="margin-left: 20px;" for="shoe_id">Shoe Name:</label>
                     <select name="shoe_id" id="shoe_id" class="all-inputs">
-                        <?php foreach ($shoes as $shoe): ?>
-                            <option value="<?= $shoe['shoe_id'] ?>">
-                                <?= htmlspecialchars($shoe['name']) ?> <?= $shoe['shoe_id'] == $order_item['shoe_id'] ? '"selected"' : '' ?>
+                            <option value="<?= $order_item['shoe_id'] ?>">
+                                <?= htmlspecialchars($order_item['shoe_name']) ?>
                             </option>
+                        <?php foreach ($shoes as $shoe): ?>
+                            <?= $shoe['shoe_id'] != $order_item['shoe_id']? '<option value='.$shoe['shoe_id'].'>'.$shoe['name'].'</option>':''?>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="all-inputs">
-                    <label for="quantity">Quantity:</label>
+                    <label  for="quantity">Quantity:</label>
                     <input style="width:100%" type="number" name="quantity" id="quantity" value="<?= htmlspecialchars($order_item['quantity']) ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>Available Sizes:</label>
-                    <p><?= htmlspecialchars($available_sizes) ?></p>
+                    <label style="margin-left: 20px;">Available Sizes: <?= htmlspecialchars($available_sizes) ?></label>
                     <div class="all-inputs">
                         <input style="width:100%" type="text" name="sizes" id="sizes" value="<?= htmlspecialchars($order_item['size']) ?>" placeholder="e.g. 38, 39, 40" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Available Colors:</label>
-                    <p><?= htmlspecialchars($available_colors) ?></p>
+                    <label style="margin-left: 20px;">Available Colors: <?= htmlspecialchars($available_colors) ?></label>
                     <div class="all-inputs">
                         <input style="width:100%" type="text" name="colors" id="colors" value="<?= htmlspecialchars($order_item['color']) ?>" placeholder="e.g. white, black" required>
                     </div>

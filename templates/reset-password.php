@@ -79,7 +79,7 @@ if (strtotime($user["reset_token_expires_at"]) <= time()) {
                     </div>
                 </div>
                 <div class="submit">
-                    <input type="submit" name="reset" value="Login">
+                    <input type="submit" name="reset" value="Reset">
                 </div>
                 <p style="color:red;font-size:13px;text-align:center"><?=$error?></p>
             </form>

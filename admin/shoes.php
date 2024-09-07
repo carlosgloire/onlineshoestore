@@ -2,7 +2,6 @@
 session_start();
 require_once('../controllers/functions.php');
 require_once('../controllers/database/db.php');
-require_once('../controllers/functions.php');
 notAdmin();
  ?>
 <!DOCTYPE html>
@@ -70,9 +69,9 @@ notAdmin();
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>
-                <a href="shipment.html">
-                    <i class="bi bi-flower2"></i>
-                    <span>Shipment</span>
+                <a href="payment_history.php">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <span>Payment history</span>
                 </a>
             </nav>
         </div>
@@ -80,9 +79,9 @@ notAdmin();
         <div class="second-bloc">
             <div style="display: flex;justify-content:space-around;align-items:center">
                 <div class="all-inputs" style="align-items:center;">
-                    <form method="GET" action="">
+                    <form action="" method="GET" >
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="search" id="search" name="search" placeholder="Search a shoe here">
+                        <input style="width: initial;" type="search" id="search" name="search" placeholder="Search a shoe here">
                     </form>
                 </div>
                 <div class="add-shoes">
@@ -94,10 +93,10 @@ notAdmin();
                 $searchQuery = '';
                 if (isset($_GET['search'])) {
                     $searchQuery = htmlspecialchars($_GET['search']);
-                    $query = $db->prepare('SELECT * FROM shoes WHERE name LIKE :search');
+                    $query = $db->prepare('SELECT * FROM shoes WHERE name LIKE :search ' );
                     $query->execute(['search' => '%' . $searchQuery . '%']);
                 } else {
-                    $query = $db->prepare('SELECT * FROM shoes');
+                    $query = $db->prepare('SELECT * FROM shoes ORDER BY shoe_id DESC');
                     $query->execute();
                 }
                 $shoes = $query->fetchAll();

@@ -1,0 +1,32 @@
+.shoes-item{
+    margin-top: 30px;
+    position: relative;
+}
+
+.shoes-item .bi-chevron-left,.bi-chevron-right{
+    font-size: 18px;
+    padding: 10px 15px;
+    color: #ffff;
+    border-radius: 50%;
+    position: absolute;
+    font-weight: 700;
+    background-color: #141b1fda;
+    cursor: pointer;
+}
+.bi-chevron-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.bi-chevron-right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.categorie-images {
+    display: flex;
+    gap: 20px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}

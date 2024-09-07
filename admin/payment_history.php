@@ -1,8 +1,40 @@
 <?php
-    session_start();
-    require_once('../controllers/send_news_letter.php');
-    require_once('../controllers/functions.php');
-    notAdmin();
+session_start();
+require_once('../controllers/functions.php');
+require_once('../controllers/database/db.php');
+notAdmin();
+
+$sql = "
+SELECT 
+    u.firstname,
+    u.lastname,
+    p.payment_date, 
+    SUM(oiu.quantity) AS shoes_purchased, 
+    p.payment_method, 
+    p.amount, 
+    p.status 
+FROM 
+    payment p 
+JOIN 
+    order_user ou ON p.order_id = ou.order_id 
+JOIN 
+    order_item_user oiu ON ou.order_id = oiu.order_id 
+JOIN 
+    users u ON ou.user_id = u.user_id
+GROUP BY 
+    u.firstname, 
+    u.lastname, 
+    p.payment_date, 
+    p.payment_method, 
+    p.amount, 
+    p.status
+ORDER BY
+    p.payment_date DESC  
+";
+
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,12 +42,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter</title>
+    <title>Payment history</title>
 
     <!--css-->
     <link rel="stylesheet" href="../asset/css/style.css">
     <link rel="stylesheet" href="../asset/css/admin.css">
     <link rel="stylesheet" href="../asset/css/product.css">
+    <link rel="stylesheet" href="../asset/css/payment_history.css">
 
     <!--Font family-->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
@@ -57,7 +90,7 @@
                     <i class="fa-solid fa-socks"></i>
                     <span>Shoes</span>
                 </a>
-                <a class="activ" href="#">
+                <a href="newsletter.php">
                     <i class="bi bi-card-text"></i>
                     <span>Newsletter</span>
                 </a>
@@ -69,30 +102,37 @@
                     <i class="bi bi-border"></i>
                     <span>Orders</span>
                 </a>
-                <a href="payment_history.php">
+                <a class="activ" href="#">
                     <i class="bi bi-credit-card-2-front"></i>
                     <span>Payment history</span>
                 </a>
             </nav>
         </div>
-        <div class="second-bloc">
-            <div class="newsletter-form">
-                <form action="" method="post">
-                    <h3>Newsletter</h3>
-                    <div class="all-inputs">
-                        <input type="text" name="subject" placeholder="Message title">
-                    </div>
-                    <div>
-                        <textarea name="message" id="" placeholder="Message..."></textarea>
-                    </div>
+        <div class="second-bloc container" >
+            <h2 style="text-align: center;margin-top:20px;margin-bottom:10px">Payment history</h2>
 
-                    <div class="submit">
-                        <input type="submit" name="send" value="Send message">
-                    </div>
-                    <p style="color:red;font-size:13px;text-align:center"><?=$error?></p>
-                    <p style="color:green;font-size:13px;text-align:center"><?=$success?></p>
-                </form>
-            </div>
+            <table>
+                <tr>
+                    <th style="text-align: left;">Name</th>
+                    <th>Payment Date</th>
+                    <th>Shoes Purchased</th>
+                    <th>Payment Method</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+                <?php foreach ($results as $row): ?>
+                <tr>
+                    <td style="text-align: left;"><?php echo htmlspecialchars($row['firstname'] . ' ' . htmlspecialchars($row['lastname'])); ?></td>
+                    <td><?php echo htmlspecialchars($row['payment_date']); ?></td>
+                    <td><?php echo htmlspecialchars($row['shoes_purchased']); ?></td>
+                    <td><?php echo htmlspecialchars($row['payment_method']); ?></td>
+                    <td><?php echo htmlspecialchars($row['amount']); ?></td>
+                    <td class="<?php echo 'status-' . strtolower(htmlspecialchars($row['status'])); ?>">
+                        <?php echo htmlspecialchars($row['status']); ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </table>
         </div>
     </section>
 

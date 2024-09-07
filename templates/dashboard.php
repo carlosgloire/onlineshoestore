@@ -2,7 +2,7 @@
 session_start();
 require_once('../controllers/functions.php');
 require_once('../controllers/database/db.php');
-
+logout();
 notconnected();
 
 // Fetch orders, order items, and shoe names from the database
@@ -87,13 +87,15 @@ foreach ($orders as $order) {
                         <i class="bi bi-person-check"></i>
                         <span>My profile</span>
                     </a>
-                    <a href="#">
+                    <a href="payment_history.php">
                         <i class="bi bi-credit-card-2-front"></i>
-                        <span>Payment</span>
+                        <span>Payment history</span>
                     </a>
                     <a href="#">
                         <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Log out</span>
+                        <form action="" method="post" style="margin-top: -3px;">
+                            <button name="logout" style="color: white;"><span>Log out</span></button>
+                        </form>
                     </a>
                 </nav>
             </div>
