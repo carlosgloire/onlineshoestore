@@ -57,6 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sizes = isset($_POST['sizes']) ? $_POST['sizes'] : $order_item['size'];
     $colors = isset($_POST['colors']) ? $_POST['colors'] : $order_item['color'];
 
+    // Fetch the available stock of the selected shoe
+    $stock_query = $db->prepare("SELECT stock FROM shoes WHERE shoe_id = ?");
+    $stock_query->execute([$shoe_id]);
+    $available_stock = $stock_query->fetchColumn();
+
+    if ($quantity > $available_stock) {
+        echo '<script>alert("The quantity entered is unavailable. Available stock: ' . htmlspecialchars($available_stock) . '");</script>';
+        echo '<script>window.location.href="edit_order.php?order_item_id=' . htmlspecialchars($order_item_id) . '&order_id=' . htmlspecialchars($order_id) . '";</script>';
+        exit;
+    }
+
     // Fetch the price of the selected shoe
     $price_query = $db->prepare("SELECT price FROM shoes WHERE shoe_id = ?");
     $price_query->execute([$shoe_id]);
@@ -65,20 +76,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Calculate the total price
     $total_price = $price * $quantity;
 
-    $update_query = $db->prepare("UPDATE order_item 
-                                  SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? 
-                                  WHERE order_id = ?");
+    // Update order_item and order_item_user
+    $update_query = $db->prepare("UPDATE order_item SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? WHERE order_id = ?");
     $update_query->execute([$shoe_id, $quantity, $sizes, $colors, $total_price, $order_id]);
-    
-    
-    $update_query = $db->prepare("UPDATE order_item_user 
-                                  SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? 
-                                  WHERE order_item_id = ?");
+
+    $update_query = $db->prepare("UPDATE order_item_user SET shoe_id = ?, quantity = ?, size = ?, color = ?, total_price = ? WHERE order_item_id = ?");
     $update_query->execute([$shoe_id, $quantity, $sizes, $colors, $total_price, $order_item_id]);
 
     echo '<script>alert("Order item updated successfully.");</script>';
     echo '<script>window.location.href="dashboard.php";</script>';
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

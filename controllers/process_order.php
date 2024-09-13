@@ -32,9 +32,9 @@ if (isset($_SESSION['panier']) && !empty($_SESSION['panier'])) {
     $order_id = $db->lastInsertId(); // Get the ID of the newly created order
 
     // Insert a new order record for user
-    $order_query_user = $db->prepare('INSERT INTO order_user (user_id, order_date, status) VALUES (?, NOW(), "pending")');
-    $order_query_user->execute([$user_id]);
-    $order_id = $db->lastInsertId(); 
+    $order_query_user = $db->prepare('INSERT INTO order_user (order_id, user_id, order_date, status) VALUES (?, ?, NOW(), "pending")');
+    $order_query_user->execute([$order_id, $user_id]); // Use the same $order_id
+
 
     // Email content initialization
     $order_details = "";

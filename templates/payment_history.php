@@ -68,7 +68,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="dashboard" >
             <div class="left-side">
                 <nav>
-                    <a class="act" href="#">
+                    <a class="act" href="dashboard.php">
                         <i class="bi bi-clipboard-pulse"></i>
                         <span>Dashboard</span>
                     </a>

@@ -13,7 +13,11 @@ $address = isset($_GET['address']) ? $_GET['address'] : '';
 $whatsapp = isset($_GET['whatsapp']) ? $_GET['whatsapp'] : '';
 $amount = isset($_GET['amount']) ? $_GET['amount'] : 0;  // Set default value or handle gracefully
 
-
+if (!$country || !$address || !$whatsapp || !$amount) {
+    // Handle missing parameters gracefully, e.g., redirect to an error page or back to payment.php
+    header('Location: payment.php');
+    exit();
+}
 
 $payment_status = "completed"; // Set the payment status as completed
 

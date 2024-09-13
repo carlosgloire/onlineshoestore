@@ -7,7 +7,7 @@ if (isset($_GET['order_id']) && !empty($_GET['order_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     echo '<script>alert("No order ID provided.");</script>';
-    echo '<script>window.location.href="templates/";</script>';
+    echo '<script>window.location.href="../templates/";</script>';
     exit;
 }
 
@@ -19,9 +19,11 @@ if (!$order) {
     header('Location: cart.php');
     exit();
 }
+$quantity_price = $db->prepare('SELECT SUM(total_price) AS total_amount FROM order_item_user WHERE order_id = ?');
+$quantity_price->execute([$order_id]);
+$totalorder = $quantity_price->fetchColumn();
 
-$totalorder = $order['total_amount'];
-$quantity_query = $db->prepare('SELECT SUM(quantity) AS total_quantity FROM order_item WHERE order_id = ?');
+$quantity_query = $db->prepare('SELECT SUM(quantity) AS total_quantity FROM order_item_user WHERE order_id = ?');
 $quantity_query->execute([$order_id]);
 $order_quantity = $quantity_query->fetchColumn();
 
@@ -36,14 +38,13 @@ if (!$user) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Payment</title>
-        <!--css-->
-        <link rel="stylesheet" href="../asset/css/admin.css">
+    <!--css-->
+    <link rel="stylesheet" href="../asset/css/admin.css">
     <link rel="stylesheet" href="../asset/css/style.css">
     <link rel="stylesheet" href="../asset/css/product.css">
     <!--Font family-->
@@ -57,19 +58,24 @@ if (!$user) {
 </head>
 <body>
     <style>
-        .continue-shopping{
+        .continue-shopping {
             color: #fff;
-        width: 100%;
-        padding: 10px 15px;
-        text-align: center;
-        margin-top: 10px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        background: #141b1fda;
-        font-family: "Poppins", sans-serif;
+            width: 100%;
+            padding: 10px 15px;
+            text-align: center;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            background: #141b1fda;
+            font-family: "Poppins", sans-serif;
+        }
+        /* Hide the shipping address container by default */
+        #shipping-address-container {
+            display: none;
         }
     </style>
+
     <section class="payment-section">
         <div class="payment-container">
             <h1 style="margin-bottom: 20px;">Complete Your Payment</h1>
@@ -85,13 +91,17 @@ if (!$user) {
                         <option value="DRC">DRC</option>
                     </select>                
                 </div>
-                <div class="all-inputs">
-                    <i class="bi bi-house"></i>
-                    <input type="text" style="width:100%" id="address" name="address" placeholder="Write here the address where the package should be delivered">
-                </div>
-                <div class="all-inputs" >
-                    <i class="bi bi-whatsapp"></i>
-                    <input style="width:100%" type="text" id="whatsapp" name="whatsapp" placeholder="Provide the WhatsApp number">
+
+                <!-- Shipping Address Container (Hidden by default for Rwanda) -->
+                <div id="shipping-address-container">
+                    <div class="all-inputs">
+                        <i class="bi bi-house"></i>
+                        <input type="text" style="width:100%" id="address" name="address" placeholder="Write here the address where the package should be delivered">
+                    </div>
+                    <div class="all-inputs">
+                        <i class="bi bi-whatsapp"></i>
+                        <input style="width:100%" type="text" id="whatsapp" name="whatsapp" placeholder="Provide the WhatsApp number">
+                    </div>
                 </div>
 
                 <div class="all-inputs">
@@ -106,30 +116,61 @@ if (!$user) {
             </form>
         </div>
     </section>
+
     <script>
         const countrySelect = document.getElementById('country');
+        const shippingAddressContainer = document.getElementById('shipping-address-container');
         const orderTotalElement = document.getElementById('order-total');
         const paymentMethodSelect = document.getElementById('payment-method');
         let orderTotal = parseFloat(<?=$totalorder?>);
         const orderQuantity = parseInt(<?=$order_quantity?>);
 
+        // Show or hide the shipping address container based on selected country
+        function updateShippingAddressVisibility() {
+            const selectedCountry = countrySelect.value;
+            if (selectedCountry === 'Rwanda') {
+                shippingAddressContainer.style.display = 'none';
+            } else {
+                shippingAddressContainer.style.display = 'block';
+            }
+        }
+ 
+        // Initial check
+        updateShippingAddressVisibility();
+
+        // Add event listener for country change
+        countrySelect.addEventListener('change', updateShippingAddressVisibility);
+
         countrySelect.addEventListener('change', function() {
             if (this.value !== 'Rwanda') {
+                shippingAddressContainer.style.display = 'block'; // Show shipping address
                 if (orderQuantity >= 20) {
-                    orderTotal = parseFloat(<?=$totalorder?>) * 1.10;
+                    orderTotal = parseFloat(<?= json_encode($totalorder) ?>) * 1.10;
                 } else {
                     alert("For shipping out of Rwanda, the quantity of your shoes must be 20 or more.");
                     this.value = 'Rwanda';
-                    orderTotal = parseFloat(<?=$totalorder?>);
+                    orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
+                    shippingAddressContainer.style.display = 'none'; // Hide shipping address if Rwanda is selected
                 }
             } else {
-                orderTotal = parseFloat(<?=$totalorder?>);
+                orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
+                shippingAddressContainer.style.display = 'none'; // Hide shipping address for Rwanda
             }
             orderTotalElement.textContent = orderTotal.toFixed(2);
         });
 
         function makePayment() {
             const paymentMethod = paymentMethodSelect.value;
+            const country = countrySelect.value;
+            const address = document.getElementById('address').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const amount = orderTotal.toFixed(2);
+            const orderId = <?= $order_id ?>;
+
+            // Determine the redirect URL based on the selected country
+            const redirectUrl = country === 'Rwanda' ?
+                `confirmcheckout.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}` :
+                `shipment.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}`;
 
             FlutterwaveCheckout({
                 public_key: "FLWPUBK_TEST-33e52f06e038469d6693230b8bc85b62-X",
@@ -138,7 +179,7 @@ if (!$user) {
                 currency: "RWF",  // Currency set to RWF
                 country: "RW",
                 payment_options: paymentMethod,
-                redirect_url: "http://localhost/onlineShoeStore/templates/confirmcheckout.php",
+                redirect_url: redirectUrl,
                 meta: {
                     consumer_id: 23,
                     consumer_mac: "92a3-912ba-1192a",
@@ -150,13 +191,13 @@ if (!$user) {
                 },
                 callback: function (data) {
                     console.log(data);
-                    window.location.href = "confirmcheckout.php";
+                    window.location.href = redirectUrl;
                 },
                 onclose: function() {
-                    // close modal
+                    // Handle modal close
                 },
                 customizations: {
-                    title: "Best Payment getway",
+                    title: "Best Payment Gateway",
                     description: "Payment for your order",
                     logo: "img/favicon-32x32.png",
                 },

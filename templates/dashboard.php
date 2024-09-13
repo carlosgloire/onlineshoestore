@@ -145,13 +145,16 @@ foreach ($orders as $order) {
                                     <span><?php echo htmlspecialchars($item['price']); ?></span>
                                 </div>
                                 <div class="delete" style="display: grid;gap:10px">
-                                    <a href="edit_order.php?order_item_id=<?= $item['order_item_id'] ?>&order_id=<?= $order_id ?>" style="color: black;">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
-                                    <a href="#" class="delete delete_item" gallery_id="<?= $item['order_item_id'] ?>">
-                                        <i class="bi bi-trash3"></i> delete
-                                    </a>
+                                    <?php if ($item['order_status'] == 'pending'): ?>
+                                        <a href="edit_order.php?order_item_id=<?= $item['order_item_id'] ?>&order_id=<?= $order_id ?>" style="color: black;">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
+                                        <a href="#" class="delete delete_item" gallery_id="<?= $item['order_item_id'] ?>">
+                                            <i class="bi bi-trash3"></i> delete
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
+
                                 <?=popup_order_item()?>
                             </div>
 

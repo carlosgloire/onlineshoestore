@@ -36,7 +36,6 @@ if (!$user) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -70,6 +69,10 @@ if (!$user) {
             background: #141b1fda;
             font-family: "Poppins", sans-serif;
         }
+
+        #shipping-address-container {
+            display: none;
+        }
     </style>
     <section class="payment-section">
         <div class="payment-container">
@@ -86,9 +89,12 @@ if (!$user) {
                         <option value="DRC">DRC</option>
                     </select>                
                 </div>
-                <div class="all-inputs">
-                    <i class="bi bi-house"></i>
-                    <input type="text" style="width:100%" id="address" name="address" placeholder="Write here the address where the package should be delivered">
+                <!-- Hidden by default for Rwanda -->
+                <div id="shipping-address-container">
+                    <div class="all-inputs">
+                        <i class="bi bi-house"></i>
+                        <input type="text" style="width:100%" id="address" name="address" placeholder="Write here the address where the package should be delivered">
+                    </div>
                 </div>
                 <div class="all-inputs" >
                     <i class="bi bi-whatsapp"></i>
@@ -111,67 +117,74 @@ if (!$user) {
         const countrySelect = document.getElementById('country');
         const orderTotalElement = document.getElementById('order-total');
         const paymentMethodSelect = document.getElementById('payment-method');
+        const shippingAddressContainer = document.getElementById('shipping-address-container');
         let orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
         const orderQuantity = parseInt(<?= json_encode($order_quantity) ?>);
         const orderId = <?= json_encode($order_id) ?>;
 
         countrySelect.addEventListener('change', function() {
             if (this.value !== 'Rwanda') {
+                shippingAddressContainer.style.display = 'block'; // Show shipping address
                 if (orderQuantity >= 20) {
                     orderTotal = parseFloat(<?= json_encode($totalorder) ?>) * 1.10;
                 } else {
                     alert("For shipping out of Rwanda, the quantity of your shoes must be 20 or more.");
                     this.value = 'Rwanda';
                     orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
+                    shippingAddressContainer.style.display = 'none'; // Hide shipping address if Rwanda is selected
                 }
             } else {
                 orderTotal = parseFloat(<?= json_encode($totalorder) ?>);
+                shippingAddressContainer.style.display = 'none'; // Hide shipping address for Rwanda
             }
             orderTotalElement.textContent = orderTotal.toFixed(2);
         });
 
         function makePayment() {
-            const paymentMethod = paymentMethodSelect.value;
-            const country = document.getElementById('country').value;
-            const address = document.getElementById('address').value;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const amount = orderTotal.toFixed(2); // Ensure amount is formatted correctly
+    const paymentMethod = paymentMethodSelect.value;
+    const country = countrySelect.value;
+    const address = document.getElementById('address').value;
+    const whatsapp = document.getElementById('whatsapp').value;
+    const amount = orderTotal.toFixed(2);
+    const orderId = <?= $order_id ?>;
 
-            const redirectUrl = country === 'Rwanda' ? 
-                `confirmcheckout.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}` : 
-                `shipment.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}`;
+        // Determine the redirect URL based on the selected country
+        const redirectUrl = country === 'Rwanda' ?
+            `confirmcheckout.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}` :
+            `shipment.php?order_id=${orderId}&country=${country}&address=${encodeURIComponent(address)}&whatsapp=${encodeURIComponent(whatsapp)}&amount=${amount}`;
 
-            FlutterwaveCheckout({
-                public_key: "FLWPUBK_TEST-33e52f06e038469d6693230b8bc85b62-X",
-                tx_ref: "RX1_" + Math.floor((Math.random() * 1000000000) + 1),
-                amount: parseFloat(amount),
-                currency: "RWF",
-                country: "RW",
-                payment_options: paymentMethod,
-                redirect_url: `http://localhost/onlineShoeStore/templates/${redirectUrl}`,
-                meta: {
-                    consumer_id: 23,
-                    consumer_mac: "92a3-912ba-1192a",
-                },
-                customer: {
-                    email: "<?php echo $user['email']; ?>",
-                    phone_number: "<?php echo $user['phone']; ?>",
-                    name: "<?php echo $user['firstname'].' '.$user['lastname']; ?>",
-                },
-                callback: function (data) {
-                    console.log(data);
-                    window.location.href = "confirmcheckout.php";
-                },
-                onclose: function() {
-                    // close modal
-                },
-                customizations: {
-                    title: "Best Payment gateway",
-                    description: "Payment for your order",
-                    logo: "img/favicon-32x32.png",
-                },
-            });
-        }
+        FlutterwaveCheckout({
+            public_key: "FLWPUBK_TEST-33e52f06e038469d6693230b8bc85b62-X",
+            tx_ref: "RX1_" + Math.floor((Math.random() * 1000000000) + 1),
+            amount: orderTotal,
+            currency: "RWF",  // Currency set to RWF
+            country: "RW",
+            payment_options: paymentMethod,
+            redirect_url: redirectUrl,
+            meta: {
+                consumer_id: 23,
+                consumer_mac: "92a3-912ba-1192a",
+            },
+            customer: {
+                email: "<?php echo $user['email']; ?>",
+                phone_number: "<?php echo $user['phone']; ?>",
+                name: "<?php echo $user['firstname']; ?>",
+            },
+            callback: function (data) {
+                console.log(data);
+                window.location.href = redirectUrl;
+            },
+            onclose: function() {
+                // close modal
+            },
+            customizations: {
+                title: "Best Payment Gateway",
+                description: "Payment for your order",
+                logo: "img/favicon-32x32.png",
+            },
+        });
+    }
+
     </script>
 </body>
 </html>

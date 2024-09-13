@@ -75,7 +75,7 @@
                 </div>
                 <div class="all-inputs">
                     <i class="bi bi-bank"></i>
-                    <input type="text" id="city" name="city" placeholder="Enter city" value="<?=isset($_POST['city'])?$_POST['city']:''?>">
+                    <input type="text" id="city" name="city" placeholder="Enter The full address" value="<?=isset($_POST['city'])?$_POST['city']:''?>">
                 </div>
                 <div class="all-inputs">
                     <i class="bi bi-file-earmark-image"></i>

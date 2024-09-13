@@ -171,7 +171,7 @@ foreach ($paymentResults as $payment) {
                             echo '<div>';
                             echo '<i class="bi bi-bookmark-star"></i>';
                             echo '<p>' . $row['category_name'] . '</p>';
-                            echo '<span>Total Shoes: ' . $row['total_shoes'] . '</span>';
+                            echo '<span>Models: ' . $row['total_shoes'] . '</span>';
                             echo '<span>Total Stock: ' . $row['total_stock'] . '</span>';
                             echo '</div>';
                         }
