@@ -212,6 +212,7 @@ $shoes = $query->fetchAll();
         ?>
     </section>
     <script src="../asset/javascript/prod.js"></script>
+    <script src="../asset/javascript/app.js"></script>
     <script>
         document.getElementById('search').addEventListener('input', function() {
             let searchQuery = this.value;

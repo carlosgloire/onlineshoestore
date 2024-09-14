@@ -67,7 +67,11 @@ foreach ($orders as $order) {
     }
     $grouped_orders[$firstname][$lastname]['dates'][$date][$order_id][] = $order;
 }
+
+
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,85 +118,95 @@ foreach ($orders as $order) {
             </nav>
         </div>
         <div class="right-side" style="margin-bottom: 30px;">
+            <div class="all-inputs" style="align-items:center;float:right;margin-right:30px">
+                <form action="" method="GET">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input style="width: initial;" type="search" id="search" name="search" placeholder="Search an order here">
+                </form>
+            </div>
             <h2 style="text-align: center;margin-top:20px">Orders</h2>
-            <?php foreach ($grouped_orders as $firstname => $orders_by_firstname): ?>
-                <?php foreach ($orders_by_firstname as $lastname => $user_details): ?>
-                    <h4 style="margin-left: 30px;"><?php echo htmlspecialchars($firstname . ' ' . $lastname); ?></h4>
-                    <p style="margin-left: 30px; color: #555;"><?php echo htmlspecialchars($user_details['city'] . ', ' . $user_details['country'] . ' - ' . $user_details['phone']); ?></p>
-                    <?php foreach ($user_details['dates'] as $date => $orders_by_date): ?>
-                        <div class="date-group">
-                            <div class="date" style="display: flex;color: #9a9a9a;font-weight: 500;font-size: 0.8rem;margin-top: 20px;justify-content: flex-end;margin-right:30px"><?php echo $date; ?></div>
-                            <?php foreach ($orders_by_date as $order_id => $items): 
-                                $total_order_price = 0;
-                                $pending_order_found = false;
-                                $shipment_country = $items[0]['shipping_country'] ?? '';
-                                $shipping_address = $items[0]['shipping_address'] ?? '';
-                                $whatsapp_number = $items[0]['whatsapp_number'] ?? '';
-                                $amt = $items[0]['amount'] ?? '';
-                                
-                                foreach ($items as $item):
-                                    $total_order_price += $item['total_price'];
-                                    if ($item['order_status'] == 'pending') {
-                                        $pending_order_found = true;
-                                    }
-                                ?>
-                                <div class="our-panier-prod">
-                                    <div class="order-prod">
-                                        <div>
-                                            <p><img src="../templates/shoes/<?=$item['photo']?>" alt=""></p>
-                                        </div>
-                                        <div>
-                                            <h4>Sizes selected</h4>
-                                            <span><?php echo htmlspecialchars($item['size']); ?></span>
-                                        </div>
-                                        <div>
-                                            <h4>Colors selected</h4>
-                                            <span><?php echo htmlspecialchars($item['color']); ?></span>
-                                        </div>
-                                        <div>
-                                            <h4>Quantity </h4>
-                                            <input type="number" value="<?php echo htmlspecialchars($item['quantity']); ?>" disabled>
-                                        </div>
-                                        <div>
-                                            <h4>Price </h4>
-                                            <span><?php echo htmlspecialchars($item['price']); ?> RWF</span>
-                                        </div>
-                                    </div>
-                                    <div class="price">
-                                        <h4>Total price</h4>
-                                        <span><?php echo htmlspecialchars($item['total_price']); ?> RWF</span>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                                <p style="text-align: right;margin-right: 30px;margin-top:20px;font-weight:600">Total order price: <?= htmlspecialchars($total_order_price) ?> RWF</p>
-                                <?php if ($shipment_country || $shipping_address || $whatsapp_number): ?>
-                                    <p style="text-align: right;margin-right: 30px;margin-top:0px;font-weight:600">Shipped at: <?= htmlspecialchars($shipment_country) ?>, <?= htmlspecialchars($shipping_address) ?></p>
-                                    <p style="text-align: right;margin-right: 30px;">WhatsApp: <?= htmlspecialchars($whatsapp_number) ?></p>
-                                    <p style="text-align: right;margin-right: 30px;">Total order amount shipment included: <?= htmlspecialchars($amt)?> RWF</p>
-                                <?php endif; ?>
-                                <p style="text-align: right;margin-right: 30px;">
-                                    <?php 
-                                        switch ($items[0]['order_status']) {
-                                            case 'pending':
-                                                echo "Payment status: Pending </span>";
-                                                break;
-                                            case 'completed':
-                                                echo "Payment status: Completed <span style='color:green'>✔</span>";
-                                                break;
-                                            case 'cancelled':
-                                                echo "Payment status: Cancelled ";
-                                                break;
+            <div id="order-container">
+                <?php foreach ($grouped_orders as $firstname => $orders_by_firstname): ?>
+                    <?php foreach ($orders_by_firstname as $lastname => $user_details): ?>
+                        <h4 style="margin-left: 30px;"><?php echo htmlspecialchars($firstname . ' ' . $lastname); ?></h4>
+                        <p style="margin-left: 30px; color: #555;"><?php echo htmlspecialchars($user_details['city'] . ', ' . $user_details['country'] . ' - ' . $user_details['phone']); ?></p>
+                        <?php foreach ($user_details['dates'] as $date => $orders_by_date): ?>
+                            <div class="date-group">
+                                <div class="date" style="display: flex;color: #9a9a9a;font-weight: 500;font-size: 0.8rem;margin-top: 20px;justify-content: flex-end;margin-right:30px"><?php echo $date; ?></div>
+                                <?php foreach ($orders_by_date as $order_id => $items): 
+                                    $total_order_price = 0;
+                                    $pending_order_found = false;
+                                    $shipment_country = $items[0]['shipping_country'] ?? '';
+                                    $shipping_address = $items[0]['shipping_address'] ?? '';
+                                    $whatsapp_number = $items[0]['whatsapp_number'] ?? '';
+                                    $amt = $items[0]['amount'] ?? '';
+                                    
+                                    foreach ($items as $item):
+                                        $total_order_price += $item['total_price'];
+                                        if ($item['order_status'] == 'pending') {
+                                            $pending_order_found = true;
                                         }
                                     ?>
-                                </p>
-                            <?php endforeach; ?>
-
-
-                 </div>
+                                    <div class="our-panier-prod">
+                                        <div class="order-prod">
+                                            <div>
+                                                <p><img src="../templates/shoes/<?=$item['photo']?>" alt=""></p>
+                                            </div>
+                                            <div>
+                                                <h4>Sizes selected</h4>
+                                                <span><?php echo htmlspecialchars($item['size']); ?></span>
+                                            </div>
+                                            <div>
+                                                <h4>Colors selected</h4>
+                                                <span><?php echo htmlspecialchars($item['color']); ?></span>
+                                            </div>
+                                            <div>
+                                                <h4>Quantity </h4>
+                                                <input type="number" value="<?php echo htmlspecialchars($item['quantity']); ?>" disabled>
+                                            </div>
+                                            <div>
+                                                <h4>Price </h4>
+                                                <span><?php echo htmlspecialchars($item['price']); ?> RWF</span>
+                                            </div>
+                                        </div>
+                                        <div class="price">
+                                            <h4>Total price</h4>
+                                            <span><?php echo htmlspecialchars($item['total_price']); ?> RWF</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-left: 30px;font-weight:normal"  class="total-price">
+                                        <h4 style="font-weight:normal">Total Order Price:  <span><?php echo htmlspecialchars($total_order_price); ?> RWF</span></h4>
+                                       
+                                    </div>
+                                    <?php endforeach; ?>
+                                    <?php if ($shipment_country || $shipping_address || $whatsapp_number || $amt): ?>
+                                    <div style="margin-left: 30px;"  class="shipping-info">
+                                        <?php if ($shipment_country): ?>
+                                        <p>Shipment Country: <?php echo htmlspecialchars($shipment_country); ?></p>
+                                        <?php endif; ?>
+                                        <?php if ($shipping_address): ?>
+                                        <p>Shipping Address: <?php echo htmlspecialchars($shipping_address); ?></p>
+                                        <?php endif; ?>
+                                        <?php if ($whatsapp_number): ?>
+                                        <p>WhatsApp Number: <?php echo htmlspecialchars($whatsapp_number); ?></p>
+                                        <?php endif; ?>
+                                        <?php if ($amt): ?>
+                                        <p>Amount with shipment: <?php echo htmlspecialchars($amt); ?> RWF</p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endif; ?>
+                                    <div style="margin-left: 30px;"  class="status">
+                                        <p>Status: <?php echo $pending_order_found ? '<span style="color: red;">Pending</span>' : '<span style="color: green;">Completed</span>'; ?></p>
+                                    </div>
+                                    <hr>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
+            </div>
         </div>
     </section>
+    <script src="../asset/javascript/orders.js"></script>
 </body>
 </html>

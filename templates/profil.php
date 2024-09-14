@@ -121,7 +121,7 @@ if ($user) {
                             </div>
                             <div>
                                 <i class="bi bi-app-indicator"></i>
-                                <p>City:</p>
+                                <p>Address:</p>
                                 <span><?=$city?></span>
                             </div>
                             <p style="color: red;cursor:pointer;text-align:center" class="delete" id="open">Delete Account <i  class="bi bi-trash3" ></i></p>
@@ -136,26 +136,29 @@ if ($user) {
                         <h3 style="margin-top: 20px; text-align:center;">Update my profile</h3>
                         <form action="../controllers/update_userprofile.php" method="POST" enctype="multipart/form-data">
                             <div>
-                                <input type="text" name="fname" value="<?= htmlspecialchars($fname) ?>">
-                                <input type="text" name="lname" value="<?= htmlspecialchars($lname) ?>">
-                                <input type="text" name="email" value="<?= htmlspecialchars($email) ?>">
-                                <input type="text" name="phone" value="<?= htmlspecialchars($phone) ?>">
+                                <input type="text" name="fname" value="<?= htmlspecialchars($fname) ?>" required>
+                                <input type="text" name="lname" value="<?= htmlspecialchars($lname) ?>" required>
+                                <input type="text" name="email" value="<?= htmlspecialchars($email) ?>" required>
+                                <input type="text" name="phone" value="<?= htmlspecialchars($phone) ?>" required>
                                 <select id="country" name="country" style="width: 100%; border:none; outline:none;font-family: 'Poppins', sans-serif;padding:10px">
                                     <option value="select">Select a country...</option>
-                                    <option value="Rwanda">Rwanda  "<?= $country_fetched == 'Rwanda' ? 'selected' : '' ?>"</option>
-                                    <option value="Uganda">Uganda  <?= $country_fetched == 'Uganda' ? 'selected' : '' ?></option>
-                                    <option value="Burundi">Burundi  <?= $country_fetched == 'Burundi' ? 'selected' : '' ?></option>
-                                    <option value="Tanzania" >Tanzania <?= $country_fetched == 'Tanzania' ? 'selected' : '' ?></option>
-                                    <option value="Kenya" >Kenya <?= $country_fetched == 'Kenya' ? 'selected' : '' ?></option>
-                                    <option value="Democratic-republic-of-congo" >Democratic Republic of Congo <?= $country_fetched == 'Democratic-republic-of-congo' ? 'selected' : '' ?></option>
+                                    <option value="Rwanda" <?= $country_fetched == 'Rwanda' ? 'selected' : '' ?>>Rwanda</option>
+                                    <option value="Uganda" <?= $country_fetched == 'Uganda' ? 'selected' : '' ?>>Uganda</option>
+                                    <option value="Burundi" <?= $country_fetched == 'Burundi' ? 'selected' : '' ?>>Burundi</option>
+                                    <option value="Tanzania" <?= $country_fetched == 'Tanzania' ? 'selected' : '' ?>>Tanzania</option>
+                                    <option value="Kenya" <?= $country_fetched == 'Kenya' ? 'selected' : '' ?>>Kenya</option>
+                                    <option value="Democratic-republic-of-congo" <?= $country_fetched == 'Democratic-republic-of-congo' ? 'selected' : '' ?>>Democratic Republic of Congo</option>
                                 </select>
-                                <input type="text" name="city" value="<?= htmlspecialchars($city) ?>">
+                                <input type="text" name="city" value="<?= htmlspecialchars($city) ?>" required>
                                 <input type="file" name="uploadfile">
+                                <input type="password" name="current_password" placeholder="Enter your current password" required>
                             </div>
                             <div class="sub">
-                                <input class="delete" gallery_id="<?= $shoe['shoe_id'] ?>" type="submit" name="edit" value="Update profile">
+                                <input class="delete" type="submit" name="edit" value="Update profile">
                             </div>
                         </form>
+
+
                     </div>
                 </div>
             </div>

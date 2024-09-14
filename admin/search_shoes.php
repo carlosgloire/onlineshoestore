@@ -4,7 +4,16 @@ require_once('../controllers/database/db.php');
 require_once('../controllers/functions.php');
 notAdmin();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$query = $db->prepare('SELECT * FROM shoes WHERE name LIKE :search');
+$query = $db->prepare('
+    SELECT s.*
+    FROM shoes s
+    JOIN categories c ON s.category_id = c.category_id
+    WHERE s.name LIKE :search
+       OR s.brand LIKE :search
+       OR s.color LIKE :search
+       OR s.price LIKE :search
+       OR c.category_name LIKE :search
+');
 $query->execute(['search' => '%' . $search . '%']);
 $shoes = $query->fetchAll();
 
